@@ -1,0 +1,331 @@
+{
+    "data": [
+        {
+            "city": "Livorno",
+            "region": "Toscana",
+            "country": "Italia",
+            "data": [
+                {
+                    "street": "BORGO DEI CAPPUCCINI",
+                    "schedule": [
+                        {
+                            "location": "da Piazza Giovine Italia a Piazza Gavi",
+                            "day": "Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da Piazza Giovine Italia a Piazza Gavi",
+                            "day": "Domenica",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA ARCHI A CORSO MAZZINI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA ASILI A GIULIANA",
+                            "day": "Venerdi Sabato",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA CORSO MAZZINI A ASILI",
+                            "day": "Venerdi Sabato",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA GAVI A ARCHI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA GIOVINE ITALIA A CAVALLETTI",
+                            "day": "Giovedi Venerdi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA GIULIANA A VERDI",
+                            "day": "Giovedi Venerdi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA MATTEOTTI A SPALATO",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA SPALATO A VIA DEL BOSCO",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA VERDI A CAVALLETTI",
+                            "day": "Giovedi Venerdi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA VIA DEL BOSCO A GAVI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "da VIA CAVALLETTI a PIAZZA GIOVINE ITALIA",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA CAVALLETTI a VIA GIUSEPPE VERDI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA GIUSEPPE VERDI a VIA GIULIANA",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA GIULIANA a VIA DEGLI ASILI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA DEGLI ASILI a CORSO GIUSEPPE MAZZINI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da CORSO GIUSEPPE MAZZINI a VIA DEGLI ARCHI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA DEGLI ARCHI a PIAZZA GAVI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da PIAZZA GAVI a VIA DEL BOSCO",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA DEL BOSCO a VIA SPALATO",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "da VIA SPALATO a PIAZZA GIACOMO MATTEOTTI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "13:00-19:00"
+                        }
+                    ]
+                },
+                {
+                    "street": "BORGO SANT'JACOPO",
+                    "schedule": [
+                        {
+                            "location": "DA ARCHI A VILLANI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA MICHELI A PIAZZA MAZZINI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA MONTEBELLO A ARCHI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA VILLANI A MICHELI",
+                            "day": "Giovedi",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "da PIAZZA MAZZINI a VIA GUGLIELMO MICHELI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA GUGLIELMO MICHELI a VIA GIOVANNI VILLANI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA GIOVANNI VILLANI a VIA DEGLI ARCHI",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da VIA DEGLI ARCHI a VIA MONTEBELLO",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "13:00-19:00"
+                        }
+                    ]
+                },
+                {
+                    "street": "CALA DELLO SCALO",
+                    "schedule": []
+                },
+                {
+                    "street": "CORSO AMEDEO",
+                    "schedule": [
+                        {
+                            "location": "da Via Magenta a Via Ricasoli",
+                            "day": "Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "da Via Magenta a Via Ricasoli",
+                            "day": "Domenica",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA ATTIAS A POGGIALI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA COLLEGIO A ERNESTO ROSSI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA GRAMSCI A POCCIANTI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA GUGLIE A COLLEGIO",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA GUGLIE A MAGENTA",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MAGENTA A POGGIALI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MARRADI A MAYER",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MAYER A ATTIAS",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA ORIGINE A ERNESTO ROSSI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA POCCIANTI A ORIGINE",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "TUTTA LA STRADA",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        }
+                    ]
+                },
+                {
+                    "street": "CORSO GIUSEPPE MAZZINI",
+                    "schedule": [
+                        {
+                            "location": "intera",
+                            "day": "Domenica",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "intera",
+                            "day": "Domenica",
+                            "time": "13:00-19:00"
+                        },
+                        {
+                            "location": "DA BINI A CAPPUCCINI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA CECCONI A CAPPUCCINI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MARRADI A CECCONI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MICHELI A BINI",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "DA MICHELI A BORGO SANT'JACOPO",
+                            "day": "Lunedi Martedi Mercoledi Giovedi Venerdi Sabato",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "TUTTA LA STRADA",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        }
+                    ]
+                },
+                {
+                    "street": "ERTA EGILORA",
+                    "schedule": []
+                },
+                {
+                    "street": "FUORI COMUNE-COLLESALVETTI",
+                    "schedule": []
+                },
+                {
+                    "street": "FUORI COMUNE-ROSIGNANO",
+                    "schedule": []
+                },
+                {
+                    "street": "GIOVANNI TARGIONI TOZZETTI",
+                    "schedule": [
+                        {
+                            "location": "TUTTA LA STRADA",
+                            "day": "Lun + Gio",
+                            "time": "13:00-19:00"
+                        }
+                    ]
+                },
+                {
+                    "street": "LARGO ANNA FRANCHI",
+                    "schedule": []
+                },
+                {
+                    "street": "LARGO BELLAVISTA",
+                    "schedule": [
+                        {
+                            "location": "TUTTA LA STRADA",
+                            "day": "Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "6:00-12:00"
+                        },
+                        {
+                            "location": "TUTTA LA STRADA",
+                            "day": "ESTIVO Lun + Mar + Mer + Gio + Ven + Sab",
+                            "time": "13:00-19:00"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
