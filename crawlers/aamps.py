@@ -33,9 +33,9 @@ def update_json_file(street_data, street_name):
     with open(json_file_path, 'r') as file:
         data = json.load(file)
     
-    # Find the Livorno entry and update its 'data' array
+    # Find the LIVORNO entry and update its 'data' array
     for entry in data['data']:
-        if entry['city'] == 'Livorno':
+        if entry['city'] == 'LIVORNO':
             entry['data'].append({
                 'street': street_name,
                 'schedule': street_data
@@ -68,6 +68,10 @@ def get_cleaning_schedule(street_name):
     if not civico:
         return None
 
+    # if not a number, skip
+    if not civico.isdigit():
+        return None
+
     # get all ECEZVA fields frome each json array element
     driver.get("https://servizi.aamps.livorno.it/Servizi/index.php")
     
@@ -88,18 +92,21 @@ def get_cleaning_schedule(street_name):
     # Extract the schedule
     # Replace 'result_element_selector' with the actual selector to find the schedule information
     rows = driver.find_element(By.CSS_SELECTOR, '#griglia_tabella_spazzamento').find_elements(By.TAG_NAME, 'tr')
-
+    
     schedule = []
     for row in rows:
         cells = row.find_elements(By.TAG_NAME, 'td')
         data = [cell.text for cell in cells]
         if data.__len__() > 2:
-          schedule.append({
-              'location': data[1],
-              'day': data[2],
-              'time': data[3]
-          })
+            # ignore rows for manual cleaning
+            if cells[0].find_element(By.TAG_NAME, 'img').get_attribute('src') == 'img/spazzamento-combinato.png':
+                schedule.append({
+                    'location': data[1],
+                    'day': data[2],
+                    'time': data[3]
+                })
 
+    exit();
     return schedule
 
 # List of streets to scrape
@@ -139,7 +146,7 @@ json_file_path = '../data.json'
 with open(json_file_path, 'r') as file:
     data = json.load(file)
     for entry in data['data']:
-        if entry['city'] == 'Livorno':
+        if entry['city'] == 'LIVORNO':
             entry['data'] = []
             break
     
