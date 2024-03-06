@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:string_similarity/string_similarity.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -39,47 +40,14 @@ class ScheduleInfo {
   }
 }
 
-class StreetData {
-  final String street;
-  final List<ScheduleInfo> schedule;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  StreetData({required this.street, required this.schedule});
-
-  factory StreetData.fromJson(Map<String, dynamic> json) {
-    List<ScheduleInfo> scheduleList = [];
-    if (json['schedule'] != null && json['schedule'] is List) {
-      scheduleList = (json['schedule'] as List)
-          .map((i) => ScheduleInfo.fromJson(i as Map<String, dynamic>))
-          .toList();
-    }
-
-    return StreetData(
-      street: json['street'] as String,
-      schedule: scheduleList,
-    );
-  }
-}
-
-class CityData {
-  final String city;
-  final List<StreetData> data;
-
-  CityData({required this.city, required this.data});
-
-  factory CityData.fromJson(Map<String, dynamic> json) {
-    var list = (json['data'] is List) ? json['data'] as List : [];
-    List<StreetData> dataList = list
-        .map((i) => StreetData.fromJson(i as Map<String, dynamic>))
-        .toList();
-
-    return CityData(
-      city: json['city'],
-      data: dataList,
-    );
-  }
-}
-
-void main() {
+  await Supabase.initialize(
+    url: 'https://ozdaupsjprogpcyqfuqf.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZGF1cHNqcHJvZ3BjeXFmdXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk2NTE3MDgsImV4cCI6MjAyNTIyNzcwOH0.tu-ZyWjIBufjQI7GMxwzrWdJxdwKe4Eh9XJWqXEZCeQ',
+  );
   runApp(const MyApp());
 }
 
@@ -112,14 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
   late MapController mapController;
   late LatLng _currentPosition = const LatLng(43.5060818, 11.2259568);
   String _currentAddress = 'Searching address...'; // Initial message
-  late List<CityData>? cityDataList;
   List<ScheduleInfo>? selectedSchedule = [];
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
     mapController = MapController();
+    _centerOnUserLocation();
+  }
+
+  void _centerOnUserLocation() {
     _determinePosition().then((position) {
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
@@ -127,37 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       _lookupAddress(_currentPosition); // Function to lookup the address
     });
-  }
-
-  Future<void> fetchDataFromAPI() async {
-    const String apiUrl =
-        'https://api.jsonsilo.com/215204ad-13b3-4578-81e5-723026e32152'; // Replace with your actual API URL
-    try {
-      final response = await http.get(Uri.parse(apiUrl), headers: {
-        'X-SILO-KEY': 'yHwQ3dFyBP9LsJcXhCUDPn89FBVcqpHuFTUxOcexKj',
-        'Content-Type': 'application/json'
-      });
-      if (response.statusCode == 200) {
-        final jsonResult = json.decode(response.body);
-        if (jsonResult.containsKey('data') && jsonResult['data'] is List) {
-          List<dynamic> dataList = List.from(jsonResult['data']);
-          setState(() {
-            cityDataList = dataList
-                .map((i) => CityData.fromJson(i as Map<String, dynamic>))
-                .toList();
-          });
-        } else {
-          // Handle the case where 'data' is not a list or is null
-          print('The "data" key is not a list or is null');
-        }
-      } else {
-        // Handle the case when the server returns a non-200 status code
-        print('Failed to load data from API');
-      }
-    } catch (e) {
-      // Handle any errors that occur during the HTTP request
-      print('Error occurred while fetching data: $e');
-    }
   }
 
   Future<Position> _determinePosition() async {
@@ -191,6 +130,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (response.statusCode == 200) {
       final List features = json.decode(response.body)['features'];
+
+      // avoid ['properties']['name'] 'properties']['city'] pairs duplicates
+      final seen = <String>{};
+      features.removeWhere((element) => !seen.add(
+          '${element['properties']['name']}-${element['properties']['city']}'));
+
       return features;
     } else {
       throw Exception('Failed to load suggestions');
@@ -206,6 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _currentAddress =
             '${placemarks.first.name}, ${placemarks.first.locality}';
       });
+      _loadSchedule(
+          placemarks.first.locality ?? '', placemarks.first.name ?? '');
     }
   }
 
@@ -218,44 +165,80 @@ class _MyHomePageState extends State<MyHomePage> {
       mapController.move(_currentPosition, 13.0);
       _currentAddress =
           '${suggestion['properties']['name'] ?? '-'}, ${suggestion['properties']['city'] ?? '-'}';
-      selectedSchedule = findSchedule(selectedCity, selectedStreet);
+    });
+    _loadSchedule(selectedCity, selectedStreet);
+  }
+
+  void _loadSchedule(String city, String street) async {
+    // clear previous first
+    setState(() {
+      selectedSchedule = null;
+    });
+    List<ScheduleInfo>? schedules = await findSchedule(city, street);
+    setState(() {
+      selectedSchedule = schedules;
     });
   }
 
-  List<ScheduleInfo>? findSchedule(String city, String streetQuery) {
-    if (cityDataList == null) {
-      return null;
-    }
-    CityData? matchedCity = cityDataList!.firstWhere(
-      (c) => c.city.toLowerCase() == city.toLowerCase(),
-      orElse: () => CityData(city: '', data: []),
-    );
+  Future<List<ScheduleInfo>?> findSchedule(
+      String city, String streetQuery) async {
+    try {
+      city = city.toUpperCase();
 
-    if (matchedCity.city.isEmpty) {
-      return null;
-    }
+      // get all streets first
+      final streetData = await Supabase.instance.client
+          .from('data')
+          .select('street')
+          .eq('city', city);
 
-    // Iterate over the streets in the matched city data.
-    StreetData? closestMatch;
-    int closestMatchScore = streetQuery
-        .length; // Use length of query as initial score, lower is better.
+      // Iterate over the streets in the matched city data.
+      String? closestMatch;
+      int closestMatchScore = streetQuery
+          .length; // Use length of query as initial score, lower is better.
 
-    for (var streetData in matchedCity.data) {
-      // Calculate the similarity score between the query and the street name.
-      var score = _calculateSimilarity(streetQuery, streetData.street);
+      for (var data in streetData) {
+        var streetName = data['street'];
+        // Calculate the similarity score between the query and the street name.
+        var score = _calculateSimilarity(streetQuery, streetName);
 
-      // If this street has a better score (lower), then it's a closer match.
-      if (score < closestMatchScore) {
-        closestMatch = streetData;
-        closestMatchScore = score;
+        // If this street has a better score (lower), then it's a closer match.
+        if (score < closestMatchScore) {
+          closestMatch = streetName;
+          closestMatchScore = score;
+        }
       }
-    }
 
-    if (closestMatch == null) {
+      if (closestMatch == null) {
+        // If we didn't find any matches, then we don't have a good match.
+        return null;
+      }
+
+      if (closestMatchScore > 50) {
+        // If the closest match score is too high, then we don't have a good match.
+        return null;
+      }
+
+      // Get the schedule for the closest match.
+      final scheduleData = await Supabase.instance.client
+          .from('data')
+          .select('schedule')
+          .eq('city', city)
+          .eq('street', closestMatch)
+          .single()
+          .limit(1);
+      // Convert the schedule data to a list of ScheduleInfo objects.
+
+      List<ScheduleInfo> schedules = [];
+      for (var schedule in scheduleData['schedule']['data']) {
+        ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
+        schedules.add(scheduleInfo);
+      }
+      return schedules;
+    } catch (e) {
+      // Handle any other types of errors.
+      print("Exception caught: $e");
       return null;
     }
-
-    return closestMatch.schedule;
   }
 
   int _calculateSimilarity(String query, String streetName) {
@@ -431,6 +414,11 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _centerOnUserLocation,
+        tooltip: 'Dove mi trovo',
+        child: const Icon(Icons.my_location),
       ),
     );
   }

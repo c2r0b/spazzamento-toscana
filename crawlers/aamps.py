@@ -106,7 +106,6 @@ def get_cleaning_schedule(street_name):
                     'time': data[3]
                 })
 
-    exit();
     return schedule
 
 # List of streets to scrape
