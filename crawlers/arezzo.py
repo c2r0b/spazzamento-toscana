@@ -99,4 +99,3 @@ for street in streets:
     time.sleep(0.1)
     street_schedule = get_cleaning_schedule(street)
     update_json_file('AREZZO', street_schedule, street['denominazione_estesa'], street['localita'])
-    exit()
