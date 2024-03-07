@@ -19,7 +19,7 @@ with open('data.json', 'r') as file:
             row = {
                 'region': 'TOSCANA',
                 'city': entry['city'],
-                'street': street['street'],
+                'street': street['street'] if 'street' != '' and street['street'] != None else '-',
                 'county': county,
                 'schedule': json.dumps({ 'data': street['schedule'] })
             }
