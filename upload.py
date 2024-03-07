@@ -16,10 +16,14 @@ with open('data.json', 'r') as file:
             county = entry['city']
             if 'locality' in street and street['locality']:
                 county = street['locality']
+            
+            if 'street' not in street or street['street'] == None:
+                continue
+
             row = {
                 'region': 'TOSCANA',
                 'city': entry['city'],
-                'street': street['street'] if 'street' != '' and street['street'] != None else '-',
+                'street': street['street'],
                 'county': county,
                 'schedule': json.dumps({ 'data': street['schedule'] })
             }
