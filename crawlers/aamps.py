@@ -46,6 +46,64 @@ def update_json_file(street_data, street_name):
     with open(json_file_path, 'w') as file:
         json.dump(data, file, indent=4)
 
+allowed_img_src = [
+    'https://servizi.aamps.livorno.it/Servizi/img/spazzamento-combinato.png',
+    'https://servizi.aamps.livorno.it/Servizi/img/spazzamento-meccanizzato-con-regolazione-sosta.png'
+];
+
+def transform_data(original_data):
+    day_mapping = {"Lun": 1, "Mar": 2, "Mer": 3, "Gio": 4, "Ven": 5, "Sab": 6, "Dom": 7, "LUNEDI": 1, "MARTEDI": 2, "MERCOLEDI": 3, "GIOVEDI": 4, "VENERDI": 5, "SABATO": 6, "DOMENICA": 7, "Lunedi": 1, "Martedi": 2, "Mercoledi": 3, "Giovedi": 4, "Venerdi": 5, "Sabato": 6, "Domenica": 7, "Lunedì": 1, "Martedì": 2, "Mercoledì": 3, "Giovedì": 4, "Venerdì": 5, "Luned\u00ec": 1, "Marted\u00ec": 2, "Mercoled\u00ec": 3, "Gioved\u00ec": 4, "Venerd\u00ec": 5}
+    transformed_data = []
+    entries = [];
+
+    # make two entries
+    if "civici pari" in original_data["day"] and "civici dispari" in original_data["day"]:
+        # separate the part of the text that contains civici pari/dispari from the rest (whichever comes first)
+        index = min(original_data["day"].index("civici pari"), original_data["day"].index("civici dispari"))
+
+        # check if "civil pari" is before "civici dispari"
+        if original_data["day"].index("civici pari") < original_data["day"].index("civici dispari"):
+            entries.append(original_data["day"][:index] + " civici pari")
+            entries.append(original_data["day"][index:].replace("civici pari", ""))
+        else:
+            entries.append(original_data["day"][:index] + " civici dispari")
+            entries.append(original_data["day"][index:].replace("civici dispari", ""))
+    else:
+        entries.append(original_data["day"])
+
+    for entry in entries:
+        new_entry = {
+            "location": original_data["location"],
+            "from": original_data["time"].split("-")[0],
+            "to": original_data["time"].split("-")[1]
+        }
+        # Handle weekdays and special cases
+        if "ESTIVO" in entry:
+            new_entry["summerOnly"] = True
+        
+        if "civici pari" in entry:
+            new_entry["numberEven"] = True
+        elif "civici dispari" in entry:
+            new_entry["numberOdd"] = True
+        
+        if " PARI" in entry:
+            new_entry["dayEven"] = True
+        elif "DISPARI" in entry:
+            new_entry["dayOdd"] = True
+        
+        new_entry_week_day = []
+
+        data = entry.replace(" + ", " ").split(" ")
+        for portion in data:
+            if portion in day_mapping:
+                new_entry_week_day.append(day_mapping[portion])
+            
+        new_entry["weekDay"] = new_entry_week_day if len(new_entry_week_day) > 1 else new_entry_week_day[0]
+
+        transformed_data.append(new_entry)
+    
+    return transformed_data
+
 # Function to get cleaning schedule
 def get_cleaning_schedule(street_name):
     # Construct the URL for the specific street, assuming the website has a predictable URL structure
@@ -82,7 +140,7 @@ def get_cleaning_schedule(street_name):
     wait = WebDriverWait(driver, 10)  # Wait for up to 10 seconds
     element_present = EC.presence_of_element_located((By.CSS_SELECTOR, '#griglia_tabella_spazzamento tbody tr'))  # Replace 'some-class' with a relevant class name that indicates the dropdown is loaded or the page has updated
     wait.until(element_present)
-    time.sleep(1)  # Wait an additional 2 seconds to ensure the page has fully loaded
+    time.sleep(1)
 
     # Find the submit button and click it
     # Replace 'button_id_or_name' with the actual ID or name of the submit button
@@ -99,13 +157,16 @@ def get_cleaning_schedule(street_name):
         data = [cell.text for cell in cells]
         if data.__len__() > 2:
             # ignore rows for manual cleaning
-            if cells[0].find_element(By.TAG_NAME, 'img').get_attribute('src') == 'img/spazzamento-combinato.png':
-                schedule.append({
+            img_src = cells[0].find_element(By.TAG_NAME, 'img').get_attribute('src')
+            if img_src in allowed_img_src:
+                original_data = {
                     'location': data[1],
                     'day': data[2],
                     'time': data[3]
-                })
-
+                }
+                data = transform_data(original_data)
+                for entry in data:
+                    schedule.append(entry)
     return schedule
 
 # List of streets to scrape

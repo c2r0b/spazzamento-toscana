@@ -13,15 +13,20 @@ with open('data.json', 'r') as file:
     rows_to_upsert = []
     for entry in data['data']:
         for street in entry['data']:
+            county = entry['city']
+            if 'locality' in street and street['locality']:
+                county = street['locality']
             row = {
+                'region': 'TOSCANA',
                 'city': entry['city'],
                 'street': street['street'],
+                'county': county,
                 'schedule': json.dumps({ 'data': street['schedule'] })
             }
             rows_to_upsert.append(row)
     
     # Perform a multi-insert for all prepared rows
     if rows_to_upsert:
-        supabase.table('data').upsert(rows_to_upsert).execute()
+        supabase.table('data').upsert(rows_to_upsert, ignore_duplicates=True).execute()
 
 print ("DONE!")

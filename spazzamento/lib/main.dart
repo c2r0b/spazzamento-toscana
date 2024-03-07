@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ScheduleInfo {
-  final int? weekDay;
+  final List<dynamic>? weekDay;
   final dynamic monthWeek;
   final String? from;
   final String? to;
@@ -28,6 +28,9 @@ class ScheduleInfo {
       this.to});
 
   factory ScheduleInfo.fromJson(Map<String, dynamic> json) {
+    if (json['weekDay'] is int) {
+      json['weekDay'] = [json['weekDay']];
+    }
     return ScheduleInfo(
       weekDay: json['weekDay'],
       monthWeek: json['monthWeek'],
@@ -35,7 +38,7 @@ class ScheduleInfo {
       to: json['to'],
       day: json['day'],
       time: json['time'],
-      location: json['location'],
+      location: json['location'] ?? 'Tutta la strada',
     );
   }
 }
@@ -144,51 +147,55 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _lookupAddress(LatLng position) async {
     // Use geocoding to find the address from the LatLng position
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude, position.longitude,
+        localeIdentifier: 'it_IT');
     if (placemarks.isNotEmpty) {
       setState(() {
         _currentAddress =
             '${placemarks.first.name}, ${placemarks.first.locality}';
       });
-      _loadSchedule(
+      _loadSchedule(placemarks.first.locality ?? '',
           placemarks.first.locality ?? '', placemarks.first.name ?? '');
     }
   }
 
   void onSelected(Map suggestion) {
     final selectedCity = suggestion['properties']['city'];
+    final selectedCounty = suggestion['properties']['county'];
     final selectedStreet = suggestion['properties']['name'];
     setState(() {
       _currentPosition = LatLng(suggestion['geometry']['coordinates'][1],
           suggestion['geometry']['coordinates'][0]);
       mapController.move(_currentPosition, 13.0);
       _currentAddress =
-          '${suggestion['properties']['name'] ?? '-'}, ${suggestion['properties']['city'] ?? '-'}';
+          '${suggestion['properties']['name'] ?? '-'}, ${suggestion['properties']['county'] ?? '-'}';
     });
-    _loadSchedule(selectedCity, selectedStreet);
+    _loadSchedule(selectedCity, selectedCounty, selectedStreet);
   }
 
-  void _loadSchedule(String city, String street) async {
+  void _loadSchedule(String city, String county, String street) async {
     // clear previous first
     setState(() {
-      selectedSchedule = null;
+      selectedSchedule = [];
     });
-    List<ScheduleInfo>? schedules = await findSchedule(city, street);
+    List<ScheduleInfo>? schedules = await findSchedule(city, county, street);
     setState(() {
       selectedSchedule = schedules;
     });
   }
 
   Future<List<ScheduleInfo>?> findSchedule(
-      String city, String streetQuery) async {
+      String city, String county, String streetQuery) async {
     try {
       city = city.toUpperCase();
+      county = county.toUpperCase();
 
       // get all streets first
       final streetData = await Supabase.instance.client
           .from('data')
           .select('street')
+          .eq('county', county)
           .eq('city', city);
 
       // Iterate over the streets in the matched city data.
@@ -213,23 +220,21 @@ class _MyHomePageState extends State<MyHomePage> {
         return null;
       }
 
-      if (closestMatchScore > 50) {
-        // If the closest match score is too high, then we don't have a good match.
-        return null;
-      }
-
       // Get the schedule for the closest match.
       final scheduleData = await Supabase.instance.client
           .from('data')
           .select('schedule')
           .eq('city', city)
+          .eq('county', county)
           .eq('street', closestMatch)
           .single()
           .limit(1);
-      // Convert the schedule data to a list of ScheduleInfo objects.
+
+      final schedule =
+          jsonDecode(scheduleData['schedule']) as Map<String, dynamic>;
 
       List<ScheduleInfo> schedules = [];
-      for (var schedule in scheduleData['schedule']['data']) {
+      for (var schedule in schedule['data']) {
         ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
         schedules.add(scheduleInfo);
       }
@@ -401,13 +406,55 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: Text(_currentAddress),
                       leading: const Icon(Icons.location_pin),
                     ),
-                    if (selectedSchedule == null)
+                    if (selectedSchedule == [])
                       const Center(child: CircularProgressIndicator())
+                    else if (selectedSchedule == null)
+                      const ListTile(
+                        title: Text('Nessun dato trovato'),
+                        leading: Icon(Icons.error),
+                      )
                     else
-                      ...selectedSchedule!.map((schedule) => ListTile(
-                            title: Text(schedule.location ?? ''),
-                            subtitle: Text('${schedule.day}, ${schedule.time}'),
-                          )),
+                      ...selectedSchedule!.map((schedule) {
+                        // Define the mapping and the order
+                        final daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+                        List<dynamic> activeDays = [];
+
+                        // Check if weekDay is a list or a single value and adjust accordingly
+                        if (schedule.weekDay != null) {
+                          activeDays = schedule.weekDay!;
+                        }
+
+                        return ListTile(
+                          title: Text(schedule.location ?? ''),
+                          subtitle: Text('${schedule.from} - ${schedule.to}'),
+                          leading: const Icon(Icons.schedule),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List<Widget>.generate(daysOfWeek.length,
+                                (index) {
+                              return Container(
+                                width: 24,
+                                height: 24,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: activeDays.contains(index + 1)
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  daysOfWeek[index],
+                                  style: TextStyle(
+                                    color: activeDays.contains(index + 1)
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        );
+                      }).toList(),
                   ],
                 ),
               );
