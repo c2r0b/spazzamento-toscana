@@ -137,10 +137,10 @@ def get_cleaning_schedule(street_name):
     driver.execute_script(js_script)
 
     # Wait for the table to appear or for any specific element that indicates the page has loaded the relevant data
-    wait = WebDriverWait(driver, 10)  # Wait for up to 10 seconds
+    wait = WebDriverWait(driver, 100)  # Wait for up to 10 seconds
     element_present = EC.presence_of_element_located((By.CSS_SELECTOR, '#griglia_tabella_spazzamento tbody tr'))  # Replace 'some-class' with a relevant class name that indicates the dropdown is loaded or the page has updated
     wait.until(element_present)
-    time.sleep(1)
+    time.sleep(2)
 
     # Find the submit button and click it
     # Replace 'button_id_or_name' with the actual ID or name of the submit button
@@ -214,6 +214,7 @@ with open(json_file_path, 'r') as file:
         json.dump(data, file, indent=4)
 
 for street in streets:
+    time.sleep(1)
     print(street)
     street_schedule = get_cleaning_schedule(street)
     update_json_file(street_schedule, street)
