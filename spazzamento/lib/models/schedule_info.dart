@@ -11,6 +11,8 @@ class ScheduleInfo {
   final bool? numberEven;
   final bool? numberOdd;
   final bool? summer;
+  final String? start;
+  final String? end;
 
   ScheduleInfo(
       {required this.day,
@@ -24,7 +26,9 @@ class ScheduleInfo {
       this.dayOdd,
       this.numberEven,
       this.numberOdd,
-      this.summer});
+      this.summer,
+      this.start,
+      this.end});
 
   factory ScheduleInfo.fromJson(Map<String, dynamic> json) {
     if (json['weekDay'] is int) {
@@ -46,6 +50,8 @@ class ScheduleInfo {
       numberEven: json['numberEven'],
       numberOdd: json['numberOdd'],
       summer: json['summer'],
+      start: json['start'],
+      end: json['end'],
     );
   }
 }

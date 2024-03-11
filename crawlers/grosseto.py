@@ -5,6 +5,41 @@ import time
 
 base_url = "https://grosseto.ldpgis.it/rifiuti_comunali/pub/app"
 
+# Helper function to convert Italian day names to numbers
+def day_to_number(day):
+    days = {"LUN": 1, "MAR": 2, "MER": 3, "GIO": 4, "VEN": 5, "SAB": 6, "DOM": 7, "LUNEDI": 1, "MARTEDI": 2, "MERCOLEDI": 3, "GIOVEDI": 4, "VENERDI": 5, "SABATO": 6, "SABATI": 6, "DOMENICA": 7, "DOMENICHE": 7, "Lunedi": 1, "Martedi": 2, "Mercoledi": 3, "Giovedi": 4, "Venerdi": 5, "Sabato": 6, "Domenica": 7, "LUN.": 1, "MAR.": 2, "MER.": 3, "GIO.": 4, "VEN.": 5, "SAB.": 6, "DOM.": 7, "LUNED\u00cc": 1, "MARTED\u00cc": 2, "MERCOLED\u00cc": 3, "GIOVED\u00cc": 4, "VENERD\u00cc": 5}
+    return days.get(day, None)
+
+# Function to parse the 'day' field and convert it into the desired format
+def parse_day_field(day_field):
+    if "TUTTI I GIORNI FERIALI" in day_field:
+        return {"weekDay": [1, 2, 3, 4, 5, 6]}
+    elif "TUTTI I GIORNI" in day_field:
+        return {"weekDay": [1, 2, 3, 4, 5, 6, 7]}
+    elif "TUTTI I" in day_field:
+        days = day_field.split("TUTTI I ")[1].split("-")
+        return {"weekDay": [day_to_number(day.strip()) for day in days]}
+    elif "°" in day_field:
+        # This will need to be adjusted based on the exact format of 'day' when it includes "°"
+        week_numbers = [int(num) for num in day_field if num.isdigit()]
+        days = day_field.split(" ")
+        week_days = [day_to_number(day) for day in days]
+        week_days = list(filter(None, week_days))
+        return {
+            "monthWeek": week_numbers,
+            "weekDay": week_days
+        }
+    else:
+        # Default case, needs to be adjusted based on possible values of 'day'
+        return {}
+
+# Function to convert date format from "dd/mmm" to "dd-mm"
+def convert_date_format(date_str):
+    months = {"gen": "01", "feb": "02", "mar": "03", "apr": "04", "mag": "05", "giu": "06",
+              "lug": "07", "ago": "08", "set": "09", "ott": "10", "nov": "11", "dic": "12"}
+    day, month = date_str.split("/")
+    return f"{day}-{months[month]}"
+
 # clear json file array first
 json_file_path = '../data.json'
 with open(json_file_path, 'r') as file:
@@ -66,13 +101,13 @@ def get_cleaning_schedule(street):
 
     schedule = []
     for entry in calendar:
-        schedule.append({
-            'day': entry['descrizione'],
-            'start': entry['data_inizio'],
-            'end': entry['data_fine'],
-            'morning': entry['mattino_pomeriggio'] == 'MATTINO',
-            'afternoon': entry['mattino_pomeriggio'] == 'POMERIGGIO'
-        })
+        parsed_entry = parse_day_field(entry['descrizione'])
+        parsed_entry['source'] = entry['descrizione']
+        parsed_entry['start'] = convert_date_format(entry['data_inizio'])
+        parsed_entry['end'] = convert_date_format(entry['data_fine'])
+        parsed_entry['morning'] = entry['mattino_pomeriggio'] == 'MATTINO' or 'MATTINO' in entry['descrizione']
+        parsed_entry['afternoon'] = entry['mattino_pomeriggio'] == 'POMERIGGIO' or 'POMERIGGIO' in entry['descrizione']
+        schedule.append(parsed_entry)
 
     return schedule
 
@@ -95,7 +130,7 @@ streets = json.loads(text)
 # for each street
 i = 0
 for street in streets:
-    print(street)
+    print(street['denominazione_estesa'])
     time.sleep(0.1)
     street_schedule = get_cleaning_schedule(street)
     update_json_file('GROSSETO', street_schedule, street['denominazione_estesa'], street['localita'])

@@ -3,15 +3,14 @@ import '../models/state_update.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/drawer.dart';
 import '../widgets/map.dart';
+import '../widgets/search_bar.dart';
 import '../services/location.dart';
 import '../services/schedule.dart';
-import '../services/search.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -117,60 +116,9 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           MapWidget(
               mapController: mapController, currentPosition: _currentPosition),
-          Positioned(
-            top: 8, // This aligns the search bar below the status bar
-            left: 8,
-            right: 8,
-            child: Card(
-              color: Colors.white,
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100)),
-              child: Material(
-                color: Colors.white, // Force
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TypeAheadField(
-                    controller: _typeAheadController,
-                    errorBuilder: (context, error) => const Text('Errore!'),
-                    hideOnLoading: true,
-                    hideOnEmpty: true,
-                    builder: (context, controller, focusNode) {
-                      return TextField(
-                        controller: controller,
-                        focusNode: focusNode,
-                        autofocus: false,
-                        style: DefaultTextStyle.of(context).style,
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(Icons.search),
-                            hintText: 'Cerca una strada...'),
-                      );
-                    },
-                    suggestionsCallback: (pattern) async {
-                      if (pattern.length < 3) {
-                        return [];
-                      }
-                      return await getSuggestions(pattern);
-                    },
-                    itemBuilder: (context, suggestion) {
-                      return ListTile(
-                        title: Text(
-                          '${suggestion['properties']['name'] ?? 'Unknown name'}, ${suggestion['properties']['city'] ?? 'Unknown city'}',
-                        ),
-                        subtitle: Text('${suggestion['properties']['state']}'),
-                      );
-                    },
-                    onSelected: (suggestion) {
-                      return onSelected(suggestion);
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
+          SearchBarWidget(
+              typeAheadController: _typeAheadController,
+              onSelected: onSelected),
           Stack(
             alignment:
                 Alignment.bottomCenter, // Align the FAB at the bottom center
@@ -374,19 +322,21 @@ class _HomePageState extends State<HomePage> {
 
                                     return ListTile(
                                       title: RichText(
-                                          text: TextSpan(
-                                        text: schedule.location ?? '',
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      )),
+                                        text: TextSpan(
+                                          text: schedule.location == ''
+                                              ? 'Tutta la strada'
+                                              : schedule.location,
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
                                       subtitle: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Add a divider between the schedules
-                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 10),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -426,17 +376,32 @@ class _HomePageState extends State<HomePage> {
                                               daysEvenOddWidget,
                                             ],
                                           ), // Add a divider between the schedules
-                                          const SizedBox(height: 14),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                  '${schedule.from} - ${schedule.to}'),
-                                              numbersEvenOddWidget
-                                            ],
-                                          ),
-                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 10),
+                                          if (schedule.from != null &&
+                                              schedule.to != null)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    '${schedule.from} - ${schedule.to}'),
+                                                numbersEvenOddWidget
+                                              ],
+                                            ),
+                                          if (schedule.start != null &&
+                                              schedule.end != null)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    'Dal ${schedule.start} - Al ${schedule.end}'),
+                                                numbersEvenOddWidget
+                                              ],
+                                            ),
+                                          const SizedBox(height: 10),
                                           Divider(
                                               color: Theme.of(context)
                                                   .dividerColor),
