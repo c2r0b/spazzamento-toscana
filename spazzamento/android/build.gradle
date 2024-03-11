@@ -1,4 +1,13 @@
+buildscript {
+    ext.kotlin_version = '1.9.23'
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 allprojects {
+    ext.kotlin_version = '1.9.23'
     repositories {
         google()
         mavenCentral()

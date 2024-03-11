@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "spazzamento",
+      "name": "Spazzamento",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "spazzamento (profile mode)",
+      "name": "Spazzamento (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "spazzamento (release mode)",
+      "name": "Spazzamento (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

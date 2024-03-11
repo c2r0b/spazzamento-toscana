@@ -140,7 +140,7 @@ def get_cleaning_schedule(street_name):
     wait = WebDriverWait(driver, 100)  # Wait for up to 10 seconds
     element_present = EC.presence_of_element_located((By.CSS_SELECTOR, '#griglia_tabella_spazzamento tbody tr'))  # Replace 'some-class' with a relevant class name that indicates the dropdown is loaded or the page has updated
     wait.until(element_present)
-    time.sleep(2)
+    time.sleep(1)
 
     # Find the submit button and click it
     # Replace 'button_id_or_name' with the actual ID or name of the submit button
@@ -152,21 +152,38 @@ def get_cleaning_schedule(street_name):
     rows = driver.find_element(By.CSS_SELECTOR, '#griglia_tabella_spazzamento').find_elements(By.TAG_NAME, 'tr')
     
     schedule = []
+    data_list = [];
+    first = "";
+    equal = True
     for row in rows:
         cells = row.find_elements(By.TAG_NAME, 'td')
         data = [cell.text for cell in cells]
+
         if data.__len__() > 2:
             # ignore rows for manual cleaning
             img_src = cells[0].find_element(By.TAG_NAME, 'img').get_attribute('src')
             if img_src in allowed_img_src:
-                original_data = {
+                data_list.append({
                     'location': data[1],
                     'day': data[2],
                     'time': data[3]
-                }
-                data = transform_data(original_data)
-                for entry in data:
-                    schedule.append(entry)
+                })
+                
+                if first == "":
+                    first = data[2]+data[3]
+                if data[2]+data[3] != first:
+                    equal = False
+                    break
+
+    if equal and data_list.__len__() > 1:
+        data_list[0]["location"] = ""
+        data_list = [data_list[0]]
+    
+    for data in data_list:
+        transformed_data = transform_data(data)
+        for entry in transformed_data:
+            schedule.append(entry)
+
     return schedule
 
 # List of streets to scrape
@@ -214,7 +231,6 @@ with open(json_file_path, 'r') as file:
         json.dump(data, file, indent=4)
 
 for street in streets:
-    time.sleep(1)
     print(street)
     street_schedule = get_cleaning_schedule(street)
     update_json_file(street_schedule, street)

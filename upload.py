@@ -31,6 +31,6 @@ with open('data.json', 'r') as file:
     
     # Perform a multi-insert for all prepared rows
     if rows_to_upsert:
-        supabase.table('data').upsert(rows_to_upsert, ignore_duplicates=True).execute()
+        supabase.table('data').upsert(rows_to_upsert).execute()
 
 print ("DONE!")
