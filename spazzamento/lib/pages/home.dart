@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _typeAheadController = TextEditingController();
   bool locationServiceEnabled = true;
   bool locationPermissionEnabled = true;
-  bool isLoading = true;
+  bool isLoading = false;
   double fabHeight = 220;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     mapController = MapController();
-    _centerOnUserLocation();
     _requestNotificationPermission();
   }
 
@@ -48,7 +47,8 @@ class _HomePageState extends State<HomePage> {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+        ?.requestNotificationsPermission()
+        .then((value) => {_centerOnUserLocation()});
   }
 
   void _centerOnUserLocation() async {
