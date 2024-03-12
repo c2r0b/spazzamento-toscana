@@ -6,11 +6,13 @@ import '../widgets/map.dart';
 import '../widgets/search_bar.dart';
 import '../services/location.dart';
 import '../services/schedule.dart';
+import '../services/notification.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -31,12 +33,22 @@ class _HomePageState extends State<HomePage> {
   bool locationPermissionEnabled = true;
   bool isLoading = true;
   double fabHeight = 220;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     mapController = MapController();
     _centerOnUserLocation();
+    _requestNotificationPermission();
+  }
+
+  void _requestNotificationPermission() async {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
 
   void _centerOnUserLocation() async {
@@ -99,10 +111,18 @@ class _HomePageState extends State<HomePage> {
   void _enableLocationService() async {
     if (!locationServiceEnabled) {
       await Geolocator.openLocationSettings();
-      if (!locationPermissionEnabled) {
-        await Geolocator.requestPermission();
+
+      // retry every 5 seconds until location service is enabled
+      Future.doWhile(() async {
+        await Future.delayed(const Duration(seconds: 5));
         _centerOnUserLocation();
-      }
+        return !locationServiceEnabled;
+      });
+    }
+
+    if (!locationPermissionEnabled) {
+      await Geolocator.requestPermission();
+      _centerOnUserLocation();
     }
   }
 
@@ -321,17 +341,38 @@ class _HomePageState extends State<HomePage> {
                                     }
 
                                     return ListTile(
-                                      title: RichText(
-                                        text: TextSpan(
-                                          text: schedule.location == ''
-                                              ? 'Tutta la strada'
-                                              : schedule.location,
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                      title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            RichText(
+                                              text: TextSpan(
+                                                text: schedule.location == ''
+                                                    ? 'Tutta la strada'
+                                                    : schedule.location,
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            // notification toggle button
+                                            const SizedBox(width: 10),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                scheduleNotification(
+                                                    schedule,
+                                                    context,
+                                                    flutterLocalNotificationsPlugin);
+                                              },
+                                              child: const Icon(
+                                                Icons.notifications,
+                                                color: Color.fromRGBO(
+                                                    1, 91, 147, 1),
+                                              ),
+                                            ),
+                                          ]),
                                       subtitle: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
