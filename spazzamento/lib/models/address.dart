@@ -14,7 +14,9 @@ class Address {
   factory Address.fromPlacemark(Placemark placemark) {
     return Address(
       city: placemark.locality ?? '',
-      county: placemark.subAdministrativeArea ?? '',
+      county:
+          placemark.subAdministrativeArea!.replaceFirst("Provincia di ", "") ??
+              '',
       street: placemark.thoroughfare ?? '',
     );
   }

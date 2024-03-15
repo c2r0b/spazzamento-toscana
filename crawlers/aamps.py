@@ -121,6 +121,8 @@ def get_cleaning_schedule(street_name):
     for d in data:
         if d['ECEZVA']:
           civico = d['ECEZVA']
+          if d['ECEZWA'] != "":
+            civico = d['ECEZVA'] + '/' + d['ECEZWA']
           break
     
     if not civico:
@@ -129,6 +131,8 @@ def get_cleaning_schedule(street_name):
     # if not a number, skip
     if not civico.isdigit():
         return None
+
+    print(civico)
 
     # get all ECEZVA fields frome each json array element
     driver.get("https://servizi.aamps.livorno.it/Servizi/index.php")

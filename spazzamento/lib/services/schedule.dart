@@ -5,41 +5,47 @@ import 'dart:convert';
 
 Future<List<ScheduleInfo>?> findSchedule(
     String city, String county, String streetQuery) async {
-  try {
-    city = city.toUpperCase();
-    county = county.toUpperCase();
+  city = city.toUpperCase();
+  county = county.toUpperCase();
 
-    // get all streets first
-    final streetData = await Supabase.instance.client
+  // get all streets first
+  final streetData;
+  try {
+    streetData = await Supabase.instance.client
         .from('data')
         .select('street')
         .eq('county', county)
         .eq('city', city);
+  } catch (e) {
+    print('Error fetching street data: $e');
+    return null;
+  }
 
-    // Iterate over the streets in the matched city data.
-    String? closestMatch;
-    int closestMatchScore = streetQuery
-        .length; // Use length of query as initial score, lower is better.
+  // Iterate over the streets in the matched city data.
+  String? closestMatch;
+  int closestMatchScore = 100;
 
-    for (var data in streetData) {
-      var streetName = data['street'];
-      // Calculate the similarity score between the query and the street name.
-      var score = _calculateSimilarity(streetQuery, streetName);
+  for (var data in streetData) {
+    var streetName = data['street'];
+    // Calculate the similarity score between the query and the street name.
+    var score = _calculateSimilarity(streetQuery, streetName);
 
-      // If this street has a better score (lower), then it's a closer match.
-      if (score < closestMatchScore) {
-        closestMatch = streetName;
-        closestMatchScore = score;
-      }
+    // If this street has a better score (lower), then it's a closer match.
+    if (score < closestMatchScore) {
+      closestMatch = streetName;
+      closestMatchScore = score;
     }
+  }
 
-    if (closestMatch == null) {
-      // If we didn't find any matches, then we don't have a good match.
-      return null;
-    }
+  if (closestMatch == null) {
+    // If we didn't find any matches, then we don't have a good match.
+    return null;
+  }
 
-    // Get the schedule for the closest match.
-    final scheduleData = await Supabase.instance.client
+  // Get the schedule for the closest match.
+  final scheduleData;
+  try {
+    scheduleData = await Supabase.instance.client
         .from('data')
         .select('schedule')
         .eq('city', city)
@@ -47,20 +53,19 @@ Future<List<ScheduleInfo>?> findSchedule(
         .eq('street', closestMatch)
         .single()
         .limit(1);
-
-    final schedule =
-        jsonDecode(scheduleData['schedule']) as Map<String, dynamic>;
-
-    List<ScheduleInfo> schedules = [];
-    for (var schedule in schedule['data']) {
-      ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
-      schedules.add(scheduleInfo);
-    }
-    return schedules;
   } catch (e) {
-    // Handle any other types of errors.
+    print('Error fetching schedule data: $e');
     return null;
   }
+
+  final schedule = jsonDecode(scheduleData['schedule']) as Map<String, dynamic>;
+
+  List<ScheduleInfo> schedules = [];
+  for (var schedule in schedule['data']) {
+    ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
+    schedules.add(scheduleInfo);
+  }
+  return schedules;
 }
 
 int _calculateSimilarity(String query, String streetName) {

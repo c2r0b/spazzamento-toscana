@@ -10,27 +10,34 @@ with open('data.json', 'r') as file:
     data = json.load(file)
 
     # Prepare a list of rows to insert
-    rows_to_upsert = []
+    rows_to_upsert = {}
     for entry in data['data']:
         for street in entry['data']:
             county = entry['city']
             if 'locality' in street and street['locality']:
                 county = street['locality']
-            
+
             if 'street' not in street or street['street'] == None:
                 continue
 
-            row = {
-                'region': 'TOSCANA',
-                'city': entry['city'],
-                'street': street['street'],
-                'county': county,
-                'schedule': json.dumps({ 'data': street['schedule'] })
-            }
-            rows_to_upsert.append(row)
+            # Construct a unique key for each row - adjust this based on your unique constraints
+            unique_key = f"{entry['city']}_{street['street']}_{county}"
+            
+            # Update the dictionary only if the key is not present
+            if unique_key not in rows_to_upsert:
+                rows_to_upsert[unique_key] = {
+                    'region': 'TOSCANA',
+                    'city': entry['city'],
+                    'street': street['street'],
+                    'county': county,
+                    'schedule': json.dumps({ 'data': street['schedule'] })
+                }
+
+    # Convert the dictionary values to a list for upserting
+    unique_rows_to_upsert = list(rows_to_upsert.values())
     
     # Perform a multi-insert for all prepared rows
-    if rows_to_upsert:
-        supabase.table('data').upsert(rows_to_upsert).execute()
+    if unique_rows_to_upsert:
+        supabase.table('data').upsert(unique_rows_to_upsert).execute()
 
 print ("DONE!")

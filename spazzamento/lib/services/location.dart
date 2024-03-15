@@ -40,7 +40,7 @@ Future<StateUpdate> determinePosition() async {
 
   Position pos = await Geolocator.getCurrentPosition();
   return StateUpdate(
-      isLoading: false,
+      isLoading: true,
       locationServiceEnabled: true,
       locationPermissionEnabled: true,
       currentAddress: 'Servizi di localizzazione disabilitati',
