@@ -1,7 +1,10 @@
 class ScheduleInfo {
+  final String city;
+  final String county;
+  final String street;
   final String id;
-  final List<dynamic>? weekDay;
-  final List<dynamic>? monthWeek;
+  final List<int> weekDay;
+  final List<int> monthWeek;
   final String? from;
   final String? to;
   final String? day;
@@ -16,11 +19,14 @@ class ScheduleInfo {
   final String? end;
 
   ScheduleInfo(
-      {this.day,
+      {required this.city,
+      required this.county,
+      required this.street,
+      this.day,
       this.time,
       this.location,
-      this.weekDay,
-      this.monthWeek,
+      required this.weekDay,
+      required this.monthWeek,
       this.from,
       this.to,
       this.dayEven,
@@ -30,25 +36,44 @@ class ScheduleInfo {
       this.summer,
       this.start,
       this.end})
-      : id = _generateId(weekDay, monthWeek, from, to, day, location, dayEven,
-            dayOdd, summer, start, end);
+      : id = _generateId(
+            city,
+            county,
+            street,
+            weekDay,
+            monthWeek,
+            from,
+            to,
+            location,
+            dayEven,
+            dayOdd,
+            numberEven,
+            numberOdd,
+            summer,
+            start,
+            end);
 
   static String _generateId(
-      List<dynamic>? weekDay,
-      List<dynamic>? monthWeek,
+      String city,
+      String county,
+      String street,
+      List<int> weekDay,
+      List<int> monthWeek,
       String? from,
       String? to,
-      String? day,
       String? location,
       bool? dayEven,
       bool? dayOdd,
+      bool? numberEven,
+      bool? numberOdd,
       bool? summer,
       String? start,
       String? end) {
-    return '$weekDay-$monthWeek-$from-$to-$day-$location-$dayEven-$dayOdd-$summer-$start-$end';
+    return '$city-$county-$street-$location-$dayEven-$dayOdd-$numberEven-$numberOdd-$summer-$start-$end-${weekDay.join('-')}-${monthWeek.join('-')}-$from-$to';
   }
 
-  factory ScheduleInfo.fromJson(Map<String, dynamic> json) {
+  factory ScheduleInfo.fromJson(
+      String city, String county, String street, Map<String, dynamic> json) {
     if (json['weekDay'] is int) {
       json['weekDay'] = [json['weekDay']];
     }
@@ -56,9 +81,15 @@ class ScheduleInfo {
       json['monthWeek'] = [json['monthWeek']];
     }
 
+    List<int> weekDay = json['weekDay']?.cast<int>() ?? [];
+    List<int> monthWeek = json['monthWeek']?.cast<int>() ?? [];
+
     return ScheduleInfo(
-      weekDay: json['weekDay'],
-      monthWeek: json['monthWeek'],
+      city: city,
+      county: county,
+      street: street,
+      weekDay: weekDay,
+      monthWeek: monthWeek,
       from: json['from'],
       to: json['to'],
       day: json['day'],

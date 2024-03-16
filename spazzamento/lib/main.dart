@@ -1,32 +1,8 @@
-import 'package:Spazzamento/services/notification.dart';
-import 'package:Spazzamento/models/schedule_info.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'theme.dart';
 import 'pages/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-
-Future<void> onActionReceivedMethod(
-    ReceivedAction receivedNotification) async {}
-
-Future<void> onNotificationDisplayedMethod(
-    ReceivedNotification receivedNotification) async {
-  if (receivedNotification.payload != null) {
-    // Parsing the payload data.
-    Map<String, dynamic> payload = receivedNotification.payload!;
-    ScheduleInfo schedule =
-        ScheduleInfo.fromJson(jsonDecode(payload['schedule']));
-    String currentAddress = payload['currentAddress'];
-    int durationToSubtract = int.parse(payload['durationToSubtract']);
-
-    // Parsing the payload data.
-    NotificationController.activate(
-        schedule, currentAddress, Duration(seconds: durationToSubtract));
-  } else {
-    print("Payload is null");
-  }
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,10 +25,6 @@ void main() async {
             ledColor: Colors.white)
       ],
     );
-
-    AwesomeNotifications().setListeners(
-        onActionReceivedMethod: onActionReceivedMethod,
-        onNotificationDisplayedMethod: onNotificationDisplayedMethod);
 
     runApp(const MyApp());
   } catch (error) {

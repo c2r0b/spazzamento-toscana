@@ -62,7 +62,8 @@ Future<List<ScheduleInfo>?> findSchedule(
 
   List<ScheduleInfo> schedules = [];
   for (var schedule in schedule['data']) {
-    ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
+    ScheduleInfo scheduleInfo =
+        ScheduleInfo.fromJson(city, county, closestMatch, schedule);
     schedules.add(scheduleInfo);
   }
   return schedules;

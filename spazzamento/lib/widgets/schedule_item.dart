@@ -29,16 +29,66 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
     });
   }
 
-  void _onNotificationToggle(BuildContext context) async {
+  void _onNotificationToggle(BuildContext context) {
     if (isScheduled) {
       // Cancel the notification
       NotificationController.cancel(widget.schedule.id)
           .then((value) => {_checkNotificationStatus()});
     } else {
       // Schedule the notification
-      await NotificationController.schedule(widget.schedule,
-          widget.currentAddress, context, _checkNotificationStatus);
+      showScheduleDialog(context);
     }
+  }
+
+  void schedule(BuildContext context, int hoursToSubtract) {
+    Navigator.of(context).pop(); // Close the dialog
+    NotificationController.activate(
+            widget.schedule, widget.currentAddress, hoursToSubtract)
+        .then((value) {
+      _checkNotificationStatus();
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Troppe notifiche attive'),
+        ),
+      );
+    });
+  }
+
+  Future<void> showScheduleDialog(BuildContext context) async {
+    // Make sure the user has granted permission
+    await NotificationController.requesPermission();
+
+    // Display user options for scheduling the notification
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Avvisami'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: const Text('12 ore prima'),
+              onTap: () {
+                schedule(context, 12);
+              },
+            ),
+            ListTile(
+              title: const Text('1 ora prima'),
+              onTap: () {
+                schedule(context, 1);
+              },
+            ),
+            ListTile(
+              title: const Text('Quando inizia'),
+              onTap: () async {
+                schedule(context, 0);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -82,11 +132,11 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           ],
         ),
       );
-    } else if (widget.schedule.monthWeek != null) {
+    } else if (widget.schedule.monthWeek.isNotEmpty) {
       daysEvenOddWidget = RichText(
         text: TextSpan(
           children: [
-            ...List<TextSpan>.generate(widget.schedule.monthWeek!.length,
+            ...List<TextSpan>.generate(widget.schedule.monthWeek.length,
                 (index) {
               return TextSpan(
                 text: '${widget.schedule.monthWeek![index]}°',

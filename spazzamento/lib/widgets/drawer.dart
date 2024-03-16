@@ -3,13 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 import '../constants.dart';
+import '../services/notification.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
 
   void _showPendingNotifications(BuildContext context) async {
     List<NotificationModel> pendingNotifications =
-        await AwesomeNotifications().listScheduledNotifications();
+        await NotificationController.listUnique();
 
     showDialog(
       context: context,
@@ -26,16 +27,13 @@ class DrawerWidget extends StatelessWidget {
                     var notification = pendingNotifications[index];
                     Map<String, String?> payloadMap =
                         notification.content!.payload!;
-                    String subtitle = payloadMap['date'] == null
-                        ? 'Errore'
-                        : DateFormat('dd/MM HH:mm')
-                            .format(DateTime.parse(payloadMap['date']!));
+                    String title =
+                        notification.content?.title ?? 'Errore titolo';
                     return Dismissible(
                       key: Key(notification.content!.id.toString()),
                       onDismissed: (direction) async {
                         // Cancel the notification
-                        await AwesomeNotifications()
-                            .cancel(notification.content!.id!);
+                        await NotificationController.cancel(payloadMap['id']!);
                         // Optionally, refresh the list or give feedback to the user
                         Navigator.pop(context);
                         _showPendingNotifications(context); // Refresh the list
@@ -57,7 +55,7 @@ class DrawerWidget extends StatelessWidget {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500),
                           )),
-                          subtitle: Text('Prossima: $subtitle'),
+                          subtitle: Text(title),
                         ),
                       ),
                     );
