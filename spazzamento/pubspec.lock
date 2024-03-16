@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: awesome_notifications
-      sha256: "7387f0c0031ca4a8d08f7d866ab286d880c6f2f151b87fa809077dca7c7be3ea"
+      sha256: "96b0521a80f7c0235e55826fccb53503f1a4b6877cd7b78495b4ed73c07c84a7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.2"
+    version: "0.9.3"
   boolean_selector:
     dependency: transitive
     description:

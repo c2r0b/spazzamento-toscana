@@ -123,36 +123,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Quali province?'),
-            leading: const Icon(Icons.location_searching_outlined),
-            onTap: () {
-              Navigator.pop(context);
-              showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => Dialog(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text(whichCounties),
-                        const SizedBox(height: 15),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Chiudi'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: const Text('Notifiche Attive'),
+            title: const Text('Notifiche programmate'),
             leading: const Icon(Icons.notifications_active_outlined),
             onTap: () {
               Navigator.pop(

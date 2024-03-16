@@ -3,6 +3,3 @@ const howItWorks =
 
 const privacyPolicy =
     'Questa applicazione non raccoglie dati personali, non traccia gli utenti e non utilizza cookie.\nNon è richiesto alcun consenso per l\'utilizzo.';
-
-const whichCounties =
-    'Attualmente sono disponibili i dati per le seguenti province:\n\n- Livorno (AAMPS)\n- Lucca (Sistema Ambiente)';
