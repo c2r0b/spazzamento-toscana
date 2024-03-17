@@ -5,6 +5,7 @@ import html
 import time
 from bs4 import BeautifulSoup
 import urllib.request
+from utils.lib import clear_json_file, add_to_json_file
 
 base_url = "https://www.aliaserviziambientali.it/puliziastrade"
 
@@ -28,24 +29,10 @@ def extract_time(time_str):
 
 # Function to update the JSON file with the new data for a street
 def update_json_file(city, street_data, street_name):
-    json_file_path = '../data.json'
-    
-    # Read the existing data
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)
-    
-    # Find the FIRENZE entry and update its 'data' array
-    for entry in data['data']:
-        if entry['city'] == city:
-            entry['data'].append({
-                'street': street_name,
-                'schedule': street_data
-            })
-            break
-    
-    # Write the updated data back to the JSON file
-    with open(json_file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+    add_to_json_file(city, {
+        'street': street_name,
+        'schedule': street_data
+    })
 
 # Function to get cleaning schedule
 def get_cleaning_schedule(street):
@@ -148,25 +135,8 @@ def update_city(city):
 
     streets = response.json()
 
-    # clear json file array first
-    json_file_path = '../data.json'
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)
-        found = False
-        for entry in data['data']:
-            if entry['city'] == city:
-                entry['data'] = []
-                found = True
-                break
-
-        if not found:
-            data['data'].append({
-                'city': city,
-                'data': []
-            })
-        
-        with open(json_file_path, 'w') as file:
-            json.dump(data, file, indent=4)
+    # clear content if exists, otherwise create it
+    clear_json_file(city)
 
     for street in streets:
         time.sleep(0.5)

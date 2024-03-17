@@ -2,13 +2,12 @@ import requests
 import re
 import json
 import time
+from utils.lib import clear_json_file, add_to_json_file, day_to_number
 
 base_url = "https://grosseto.ldpgis.it/rifiuti_comunali/pub/app"
 
-# Helper function to convert Italian day names to numbers
-def day_to_number(day):
-    days = {"LUN": 1, "MAR": 2, "MER": 3, "GIO": 4, "VEN": 5, "SAB": 6, "DOM": 7, "LUNEDI": 1, "MARTEDI": 2, "MERCOLEDI": 3, "GIOVEDI": 4, "VENERDI": 5, "SABATO": 6, "SABATI": 6, "DOMENICA": 7, "DOMENICHE": 7, "Lunedi": 1, "Martedi": 2, "Mercoledi": 3, "Giovedi": 4, "Venerdi": 5, "Sabato": 6, "Domenica": 7, "LUN.": 1, "MAR.": 2, "MER.": 3, "GIO.": 4, "VEN.": 5, "SAB.": 6, "DOM.": 7, "LUNED\u00cc": 1, "MARTED\u00cc": 2, "MERCOLED\u00cc": 3, "GIOVED\u00cc": 4, "VENERD\u00cc": 5}
-    return days.get(day, None)
+# clear content if exists, otherwise create it
+clear_json_file('GROSSETO')
 
 # Function to parse the 'day' field and convert it into the desired format
 def parse_day_field(day_field):
@@ -40,47 +39,13 @@ def convert_date_format(date_str):
     day, month = date_str.split("/")
     return f"{day}-{months[month]}"
 
-# clear json file array first
-json_file_path = '../data.json'
-with open(json_file_path, 'r') as file:
-    data = json.load(file)
-    found = False
-    for entry in data['data']:
-        if entry['city'] == 'GROSSETO':
-            entry['data'] = []
-            found = True
-            break
-
-    if not found:
-        data['data'].append({
-            'city': 'GROSSETO',
-            'data': []
-        })
-    
-    with open(json_file_path, 'w') as file:
-        json.dump(data, file, indent=4)
-
 # Function to update the JSON file with the new data for a street
-def update_json_file(city, street_data, street_name, locality):
-    json_file_path = '../data.json'
-    
-    # Read the existing data
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)
-    
-    # Find the GROSSETO entry and update its 'data' array
-    for entry in data['data']:
-        if entry['city'] == city:
-            entry['data'].append({
-                'street': street_name,
-                'locality': locality,
-                'schedule': street_data
-            })
-            break
-    
-    # Write the updated data back to the JSON file
-    with open(json_file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+def update_json_file(street_data, street_name, locality):
+    add_to_json_file('GROSSETO', {
+        'street': street_name,
+        'locality': locality,
+        'schedule': street_data
+    })
 
 # Function to get cleaning schedule
 def get_cleaning_schedule(street):
@@ -128,9 +93,8 @@ text = text[1:-1]
 streets = json.loads(text)
 
 # for each street
-i = 0
 for street in streets:
-    print(street['denominazione_estesa'])
+    print(street['label'])
     time.sleep(0.1)
     street_schedule = get_cleaning_schedule(street)
-    update_json_file('GROSSETO', street_schedule, street['denominazione_estesa'], street['localita'])
+    update_json_file(street_schedule, street['label'], street['localita'])
