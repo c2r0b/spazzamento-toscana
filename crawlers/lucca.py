@@ -23,7 +23,7 @@ def extract_info_external(s):
     from_time = start_time
     to_time = end_time
     monthWeek = [int(first_week), int(second_week)]
-    weekDay = [day_to_number[day_name.upper()]]  # Ensure the day name is uppercase for matching
+    weekDay = [day_to_number(day_name.upper())]  # Ensure the day name is uppercase for matching
 
     return {
         "from": from_time,
