@@ -14,6 +14,10 @@ class ScheduleInfo {
   final bool? dayOdd;
   final bool? numberEven;
   final bool? numberOdd;
+  final bool? leftSide;
+  final bool? rightSide;
+  final bool? internalSide;
+  final bool? externalSide;
   final bool? summer;
   final String? start;
   final String? end;
@@ -33,6 +37,10 @@ class ScheduleInfo {
       this.dayOdd,
       this.numberEven,
       this.numberOdd,
+      this.leftSide,
+      this.rightSide,
+      this.internalSide,
+      this.externalSide,
       this.summer,
       this.start,
       this.end})
@@ -99,29 +107,13 @@ class ScheduleInfo {
       dayOdd: json['dayOdd'],
       numberEven: json['numberEven'],
       numberOdd: json['numberOdd'],
+      leftSide: json['leftSide'],
+      rightSide: json['rightSide'],
+      internalSide: json['internalSide'],
+      externalSide: json['externalSide'],
       summer: json['summer'],
       start: json['start'],
       end: json['end'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'weekDay': weekDay,
-      'monthWeek': monthWeek,
-      'from': from,
-      'to': to,
-      'day': day,
-      'time': time,
-      'location': location,
-      'dayEven': dayEven,
-      'dayOdd': dayOdd,
-      'numberEven': numberEven,
-      'numberOdd': numberOdd,
-      'summer': summer,
-      'start': start,
-      'end': end,
-    };
   }
 }

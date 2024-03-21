@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/schedule_info.dart';
 import '../services/notification.dart';
+import './schedule_street_side.dart';
+import './schedule_month_day.dart';
 
 class ScheduleItemWidget extends StatefulWidget {
   final ScheduleInfo schedule;
@@ -102,86 +104,9 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
       activeDays = widget.schedule.weekDay!;
     }
 
-    Widget daysEvenOddWidget =
-        const SizedBox.shrink(); // Empty widget by default
-    if (widget.schedule.dayEven == true) {
-      daysEvenOddWidget = RichText(
-        text: const TextSpan(
-          children: [
-            TextSpan(text: 'Giorni ', style: TextStyle(color: Colors.black)),
-            TextSpan(
-              text: 'PARI',
-              style: TextStyle(
-                  color: Color.fromRGBO(1, 91, 147, 1),
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
-    } else if (widget.schedule.dayOdd == true) {
-      daysEvenOddWidget = RichText(
-        text: const TextSpan(
-          children: [
-            TextSpan(text: 'Giorni ', style: TextStyle(color: Colors.black)),
-            TextSpan(
-              text: 'DISPARI',
-              style: TextStyle(
-                  color: Color.fromRGBO(0, 128, 207, 1),
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
-    } else if (widget.schedule.monthWeek.isNotEmpty) {
-      daysEvenOddWidget = RichText(
-        text: TextSpan(
-          children: [
-            ...List<TextSpan>.generate(widget.schedule.monthWeek.length,
-                (index) {
-              return TextSpan(
-                text: '${widget.schedule.monthWeek![index]}°',
-                style: const TextStyle(
-                    color: Colors.blue, fontWeight: FontWeight.bold),
-              );
-            }),
-            const TextSpan(
-                text: ' del mese', style: TextStyle(color: Colors.black)),
-          ],
-        ),
-      );
-    }
-
-    Widget numbersEvenOddWidget =
-        const SizedBox.shrink(); // Empty widget by default
-    if (widget.schedule.numberEven == true) {
-      numbersEvenOddWidget = RichText(
-        text: const TextSpan(
-          children: [
-            TextSpan(text: 'Civici ', style: TextStyle(color: Colors.black)),
-            TextSpan(
-              text: 'PARI',
-              style: TextStyle(
-                  color: Color.fromRGBO(1, 91, 147, 1),
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
-    } else if (widget.schedule.numberOdd == true) {
-      numbersEvenOddWidget = RichText(
-        text: const TextSpan(
-          children: [
-            TextSpan(text: 'Civici ', style: TextStyle(color: Colors.black)),
-            TextSpan(
-              text: 'DISPARI',
-              style: TextStyle(
-                  color: Color.fromRGBO(0, 128, 207, 1),
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
-    }
+    String? location = widget.schedule.location == ''
+        ? 'Tutta la strada'
+        : widget.schedule.location;
 
     return ListTile(
         title:
@@ -189,9 +114,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           Flexible(
             child: RichText(
               text: TextSpan(
-                text: widget.schedule.location == ''
-                    ? 'Tutta la strada'
-                    : widget.schedule.location,
+                text: location,
                 style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -246,7 +169,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                     ),
                   );
                 })),
-                daysEvenOddWidget,
+                ScheduleMonthDayWidget(schedule: widget.schedule)
               ],
             ), // Add a divider between the schedules
             const SizedBox(height: 10),
@@ -255,7 +178,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('${widget.schedule.from} - ${widget.schedule.to}'),
-                  numbersEvenOddWidget
+                  ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
             if (widget.schedule.start != null && widget.schedule.end != null)
@@ -264,7 +187,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                 children: [
                   Text(
                       'Dal ${widget.schedule.start} - Al ${widget.schedule.end}'),
-                  numbersEvenOddWidget
+                  ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
             const SizedBox(height: 10),

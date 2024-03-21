@@ -55,6 +55,9 @@ def extract_info(input_str):
         result['to'] = time_location.group(2).replace('.', ':')
         result['location'] = time_location.group(3)
 
+        # remove location leading spaces and capitalize
+        result['location'] = result['location'].strip().capitalize()
+
     return result
 
 def extract_schedule(street):
