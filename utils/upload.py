@@ -9,7 +9,7 @@ supabase: Client = create_client(url, key)
 # Prepare a list of rows to insert
 rows_to_upsert = {}
 
-directory = '../data'
+directory = './data'
 
 # loop read all json files in the data folder
 # for each file, insert the data into the supabase table

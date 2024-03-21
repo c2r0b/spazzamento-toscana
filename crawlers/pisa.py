@@ -63,16 +63,35 @@ def extract_schedule(street):
     if not street_name.startswith('PIAZZA'):
       street_name = 'Via ' + street_name
     
-    schedules = street.split('\n')[1:].strip()
+    schedules = street.split('\n')[1:]
 
     result = {
       "street": street_name,
       "schedule": []
     }
+
+    # if a schedule starts with "da "/"e da " merge it with the previous one
+    for i in range(1, len(schedules)):
+        if schedules[i].replace(' ', '') == '':
+            continue
+        if re.match(r'\s*da\s[\s\w]+', schedules[i]) or re.match(r'\s*e da\s[\s\w]+', schedules[i]) or re.match(r'\s*compreso\s[\s\w]+', schedules[i]):
+            schedules[i-1] += ' ' + schedules[i]
+            schedules[i] = ''
+    
+    # if a schedule contains only "D" or "S" merge it with the next one
+    for i in range(len(schedules)-1):
+        if schedules[i].replace(' ', '') == '':
+            continue
+        if re.match(r'\s*[DS]\s*$', schedules[i]):
+            schedules[i+1] = schedules[i] + ' ' + schedules[i+1]
+            schedules[i] = ''
+    
     for schedule in schedules:
+        if schedule.replace(' ', '').replace('TRAMONTANA', '') == '':
+            continue
         data = extract_info(schedule)
         result["schedule"].append(data)
-
+    
     return result
 
 def extract_data_from_pdf(pdf_data):
@@ -85,20 +104,13 @@ def extract_data_from_pdf(pdf_data):
     text = re.split('MEZZOGIORNO', text)[1]
     text = re.split('DISPONE', text)[0]
     
-    # Split the text into chunks based on numbered paragraphs
-    chunks = re.split(r'\(\d+\)', text)[1:]  # Split and remove the first element if it's empty
-    
-    # Initialize the data structure
+    streets = re.split('•', text)[1:]
+
     data = []
-
-    for chunk in chunks:
-        streets = re.split('•', chunk)[1:]
-
-        for street in streets:
-            result = extract_schedule(street)
-            if result:
-                for entry in result:
-                    data.append(entry)
+    for street in streets:
+        result = extract_schedule(street)
+        if result:
+          data.append(result)
 
     return remove_duplicates(data)
 
