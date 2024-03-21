@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../models/schedule_info.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
@@ -44,38 +46,80 @@ class NotificationController {
 
     Map<String, String> payloadMap = {
       'id': schedule.id,
+      'address': currentAddress,
+      'schedule': jsonEncode(schedule.toJson()),
+      'hoursToSubtract': hoursToSubtract.toString(),
     };
 
+    if (schedule.monthWeek.isEmpty &&
+        schedule.dayEven == null &&
+        schedule.dayOdd == null) {
+      await scheduleRepeatNotification(schedule, hourToDisplay, hour, minute,
+          suffix, description, payloadMap, daysToSubtract);
+    }
+
+    await scheduleSingleNotification(schedule, hourToDisplay, hour, minute,
+        suffix, description, payloadMap, daysToSubtract);
+  }
+
+  static DateTime getNextNotificationDate(
+      List<int?> monthWeek, List<int?> weekday, bool? dayEven, bool? dayOdd) {
+    DateTime currentDate = DateTime.now();
+    while (true) {
+      // Check if the current date's week of the month matches any in monthWeek
+      int weekOfMonth =
+          ((currentDate.day + 7 - currentDate.weekday) / 7).ceil();
+      bool isWeekOfMonthValid =
+          monthWeek.isEmpty || monthWeek.contains(weekOfMonth);
+
+      // Check if the current date's weekday matches any in weekday
+      bool isWeekdayValid =
+          weekday.isEmpty || weekday.contains(currentDate.weekday);
+
+      // Check if the current date matches the even/odd criteria
+      bool isDayEvenOddValid = true;
+      if (dayEven != null && dayEven) {
+        isDayEvenOddValid = currentDate.day % 2 == 0;
+      } else if (dayOdd != null && dayOdd) {
+        isDayEvenOddValid = currentDate.day % 2 != 0;
+      }
+
+      // If all criteria match, return the current date
+      if (isWeekOfMonthValid && isWeekdayValid && isDayEvenOddValid) {
+        return currentDate;
+      }
+
+      // Increment the date by one day and repeat the checks
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+  }
+
+  static Future<void> scheduleRepeatNotification(
+      ScheduleInfo schedule,
+      int hourToDisplay,
+      int hour,
+      int minute,
+      String suffix,
+      String description,
+      Map<String, String> payloadMap,
+      int daysToSubtract) async {
     List<int?> restrictedDays = [];
-
-    // Define restrictedDays based on dayEven or dayOdd values
-    if (schedule.dayEven == true) {
-      restrictedDays = List.generate(31, (index) => index + 1)
-          .where((element) => element % 2 == 0)
-          .toList();
-    } else if (schedule.dayOdd == true) {
-      restrictedDays = List.generate(31, (index) => index + 1)
-          .where((element) => element % 2 != 0)
-          .toList();
-    }
-
-    if (restrictedDays.isEmpty) {
-      restrictedDays.add(0); // Ensure it executes at least once
-    }
 
     // Ensure monthWeek is not null
     // defaulting to [0] if necessary to ensure it executes at least once
-    List<int?> monthWeek = [];
+    // TODO: not currently supported by awesome_notifications
+    /*List<int?> monthWeek = [];
     if (schedule.monthWeek.isNotEmpty) {
       monthWeek = schedule.monthWeek;
     } else {
       monthWeek.add(0);
-    }
+    }*/
 
     // Calculate the number of notifications to schedule
-    int numberOfNotifications = monthWeek.length *
+    int
+        numberOfNotifications = /*monthWeek.length */ // TODO: not currently supported by awesome_notifications
         schedule.weekDay!.length *
-        restrictedDays.length; // Number of notifications to schedule
+            restrictedDays.length; // Number of notifications to schedule
 
     int currentNumberOfNotifications =
         await listAll().then((value) => value.length);
@@ -86,45 +130,97 @@ class NotificationController {
 
     List<Future> notificationFutures = [];
 
-    for (var monthweek in monthWeek) {
-      for (var weekday in schedule.weekDay!) {
-        for (var day in restrictedDays) {
-          var future = AwesomeNotifications().createNotification(
-              content: NotificationContent(
-                id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
-                channelKey: 'spazzamento_reminder_channel',
-                title:
-                    'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $suffix',
-                body: description,
-                notificationLayout: NotificationLayout.Default,
-                payload: payloadMap,
-              ),
-              schedule: NotificationCalendar(
-                  allowWhileIdle: true,
-                  preciseAlarm: true,
-                  repeats: true,
-                  weekday: weekday - daysToSubtract,
-                  day: day == 0 ? null : day,
-                  hour: hour,
-                  minute: minute,
-                  weekOfMonth: monthweek == 0 ? null : monthweek));
+    // TODO: not currently supported by awesome_notifications
+    //for (var monthweek in monthWeek) {
+    for (var weekday in schedule.weekDay!) {
+      var future = AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
+            channelKey: 'spazzamento_reminder_channel',
+            title:
+                'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $suffix',
+            body: description,
+            notificationLayout: NotificationLayout.Default,
+            payload: payloadMap,
+          ),
+          schedule: NotificationCalendar(
+            allowWhileIdle: true,
+            preciseAlarm: true,
+            repeats: true,
+            weekday: weekday - daysToSubtract,
+            hour: hour,
+            minute: minute,
 
-          notificationFutures.add(future);
+            // TODO: not currently supported by awesome_notifications
+            //weekOfMonth: monthweek == 0 ? null : monthweek
+          ));
 
-          // Throttle the creation to avoid overloading
-          if (notificationFutures.length >= 10) {
-            // Adjust this number based on performance
-            await Future.wait(notificationFutures);
-            notificationFutures.clear();
-          }
-        }
+      notificationFutures.add(future);
+
+      // Throttle the creation to avoid overloading
+      if (notificationFutures.length >= 10) {
+        // Adjust this number based on performance
+        await Future.wait(notificationFutures);
+        notificationFutures.clear();
       }
+      //}
     }
 
     // Wait for any remaining futures
     if (notificationFutures.isNotEmpty) {
       await Future.wait(notificationFutures);
     }
+  }
+
+  static Future<void> scheduleSingleNotification(
+      ScheduleInfo schedule,
+      int hourToDisplay,
+      int hour,
+      int minute,
+      String suffix,
+      String description,
+      Map<String, String> payloadMap,
+      int daysToSubtract) async {
+    DateTime date = getNextNotificationDate(
+      schedule.monthWeek,
+      schedule.weekDay,
+      schedule.dayEven,
+      schedule.dayOdd,
+    ).subtract(Duration(days: daysToSubtract));
+
+    int currentNumberOfNotifications =
+        await listAll().then((value) => value.length);
+
+    if (currentNumberOfNotifications + 1 > 64) {
+      throw Exception('Too many notifications scheduled');
+    }
+
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
+          channelKey: 'spazzamento_reminder_channel',
+          title:
+              'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $suffix',
+          body: description,
+          notificationLayout: NotificationLayout.Default,
+          payload: payloadMap,
+        ),
+        schedule: NotificationCalendar(
+            allowWhileIdle: true,
+            preciseAlarm: true,
+            repeats: false,
+            day: date.day,
+            month: date.month,
+            year: date.year,
+            hour: hour,
+            minute: minute),
+        actionButtons: [
+          // button to reschedule the notification
+          NotificationActionButton(
+            key: 'reschedule',
+            label: 'Ripeti la prossima volta',
+          ),
+        ]);
   }
 
   static Future<List<NotificationModel>> listAll() async {

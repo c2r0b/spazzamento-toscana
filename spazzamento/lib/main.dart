@@ -1,8 +1,28 @@
+import 'dart:convert';
+
+import 'package:Spazzamento/models/schedule_info.dart';
+import 'package:Spazzamento/services/notification.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'pages/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+
+Future<void> onNotificationActionReceivedMethod(
+    ReceivedNotification receivedNotification) async {
+  if (receivedNotification.payload != null) {
+    // Parsing the payload data.
+    Map<String, dynamic> payload = receivedNotification.payload!;
+    Map<String, dynamic> json = jsonDecode(payload['schedule']);
+    ScheduleInfo schedule = ScheduleInfo.fromJson(
+        json['city'], json['county'], json['street'], json);
+    String address = payload['address'];
+    int hoursToSubtract = int.parse(payload['hoursToSubtract']);
+
+    // Parsing the payload data.
+    NotificationController.activate(schedule, address, hoursToSubtract);
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +45,10 @@ void main() async {
             ledColor: Colors.white)
       ],
     );
+
+    // listen for notification events
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: onNotificationActionReceivedMethod);
 
     runApp(const MyApp());
   } catch (error) {

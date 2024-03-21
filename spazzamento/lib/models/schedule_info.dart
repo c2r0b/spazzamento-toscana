@@ -116,4 +116,30 @@ class ScheduleInfo {
       end: json['end'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'city': city,
+      'county': county,
+      'street': street,
+      'weekDay': weekDay,
+      'monthWeek': monthWeek,
+      'from': from,
+      'to': to,
+      'day': day,
+      'time': time,
+      'location': location,
+      'dayEven': dayEven,
+      'dayOdd': dayOdd,
+      'numberEven': numberEven,
+      'numberOdd': numberOdd,
+      'leftSide': leftSide,
+      'rightSide': rightSide,
+      'internalSide': internalSide,
+      'externalSide': externalSide,
+      'summer': summer,
+      'start': start,
+      'end': end,
+    };
+  }
 }

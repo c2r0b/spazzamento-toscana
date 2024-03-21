@@ -131,6 +131,36 @@ class DrawerWidget extends StatelessWidget {
               _showPendingNotifications(context);
             },
           ),
+          // Segnalazione di un problema
+          ListTile(
+            title: const Text('Segnala un problema'),
+            leading: const Icon(Icons.report_problem_outlined),
+            onTap: () {
+              Navigator.pop(context);
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => Dialog(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text('Per segnalare un problema scrivi a: '),
+                        const SizedBox(height: 15),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Chiudi'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
           ListTile(
             title: const Text('Rispetto della privacy'),
             leading: const Icon(Icons.privacy_tip_outlined),

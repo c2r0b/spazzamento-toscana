@@ -9,7 +9,7 @@ Future<List<ScheduleInfo>?> findSchedule(
   county = county.toUpperCase();
 
   // get all streets first
-  final streetData;
+  final PostgrestList streetData;
   try {
     streetData = await Supabase.instance.client
         .from('data')
@@ -43,7 +43,7 @@ Future<List<ScheduleInfo>?> findSchedule(
   }
 
   // Get the schedule for the closest match.
-  final scheduleData;
+  final PostgrestMap scheduleData;
   try {
     scheduleData = await Supabase.instance.client
         .from('data')
