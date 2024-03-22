@@ -54,6 +54,7 @@ def main():
             confirm_answer = inquirer.prompt(confirm_question)
             if confirm_answer['confirm']:
                 execute_script('utils/upload.py')
+                exit()
             else:
                 print("Upload canceled.")
         elif action == 'Exit':

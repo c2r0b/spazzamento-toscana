@@ -45,3 +45,4 @@ app.*.map.json
 # Server side generated files
 /data/*
 .venv
+.env

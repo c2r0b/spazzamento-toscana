@@ -1,15 +1,32 @@
 import json
 import os
 from supabase import create_client, Client
+from dotenv import load_dotenv
 
-url: str = "https://ozdaupsjprogpcyqfuqf.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96ZGF1cHNqcHJvZ3BjeXFmdXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk2NTE3MDgsImV4cCI6MjAyNTIyNzcwOH0.tu-ZyWjIBufjQI7GMxwzrWdJxdwKe4Eh9XJWqXEZCeQ"
+# get Supabase URL and Key from .env
+load_dotenv()
+
+url: str = os.getenv("SUPABASE_URL")
+key: str = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
+
+# authenticate with Supabase
+auth_response = supabase.auth.sign_in_with_password({
+    "email": os.getenv("SUPABASE_EMAIL"),
+    "password": os.getenv("SUPABASE_PASSWORD")
+})
+
+# Make sure to capture and use the token from the auth response
+access_token = auth_response.session.access_token
+
+if not access_token:
+    print("Authentication failed or token not available")
+    exit()
+
+directory = './data'
 
 # Prepare a list of rows to insert
 rows_to_upsert = {}
-
-directory = './data'
 
 # loop read all json files in the data folder
 # for each file, insert the data into the supabase table
@@ -32,6 +49,9 @@ for filename in os.listdir(directory):
 
                 # Construct a unique key for each row - adjust this based on your unique constraints
                 unique_key = f"{data['city']}_{street['street']}_{county}"
+
+                if data['city'] == '' or street['street'] == '' or county == '':
+                    continue
 
                 # Update the dictionary only if the key is not present
                 if unique_key not in rows_to_upsert:

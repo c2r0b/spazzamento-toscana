@@ -18,5 +18,14 @@ This app is designed to provide the citizens of Tuscany with information about t
 The python script `run.py` is used to scrape the data from the official websites of the Tuscany region. The data is then stored in json files inside the `data` folder.  
 The same script is used to upload the data to the Supabase database.
 
+## Environment variables
+You need to create a `.env` file in the root directory of the project following the example below:
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+SUPABASE_EMAIL=your_supabase_email
+SUPABASE_PASSWORD=your_supabase_password
+```
+
 ## License
 © 2024 Spazzamento Toscana by [c2r0b](https://github.com/c2r0b)
