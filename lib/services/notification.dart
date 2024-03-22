@@ -1,9 +1,62 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 
 import '../models/schedule_info.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 class NotificationController {
+  static Future<void> initialize() async {
+    await AwesomeNotifications().initialize(
+      // Set the icon to null if you want to use the default app icon
+      'resource://drawable/ic_launcher',
+      [
+        NotificationChannel(
+            channelKey: 'spazzamento_reminder_channel',
+            channelName: 'Spazzamento',
+            channelDescription: 'Notifiche per il giorno di spazzamento',
+            defaultColor: const Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+    );
+
+    // listen for notification events
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: onNotificationActionReceivedMethod);
+  }
+
+  static Future<void> onNotificationActionReceivedMethod(
+      ReceivedNotification receivedNotification) async {
+    if (receivedNotification.payload != null) {
+      // Parsing the payload data.
+      Map<String, dynamic> payload = receivedNotification.payload!;
+      Map<String, dynamic> json = jsonDecode(payload['schedule']);
+      ScheduleInfo schedule = ScheduleInfo.fromJson(
+          json['city'], json['county'], json['street'], json);
+      String address = payload['address'];
+      int hoursToSubtract = int.parse(payload['hoursToSubtract']);
+
+      // Parsing the payload data.
+      NotificationController.activate(schedule, address, hoursToSubtract);
+    }
+  }
+
+  static int getLimit() {
+    if (Platform.isAndroid) {
+      return 500;
+    }
+    return 64;
+  }
+
+  static Future<void> checkLimitExceeded(int numberOfNotifications) async {
+    int currentNumberOfNotifications =
+        await listAll().then((value) => value.length);
+    if (currentNumberOfNotifications + numberOfNotifications > getLimit()) {
+      throw Exception('Too many notifications scheduled');
+    }
+  }
+
   static Future<bool?>? requesPermission() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     if (!isAllowed) {
@@ -27,7 +80,7 @@ class NotificationController {
 
   static Future<void> activate(
       ScheduleInfo schedule, String currentAddress, int hoursToSubtract) async {
-    if (!schedule.weekDay!.isNotEmpty || schedule.from == null) {
+    if (!schedule.weekDay.isNotEmpty || schedule.from == null) {
       return;
     }
 
@@ -56,6 +109,7 @@ class NotificationController {
         schedule.dayOdd == null) {
       await scheduleRepeatNotification(schedule, hourToDisplay, hour, minute,
           suffix, description, payloadMap, daysToSubtract);
+      return;
     }
 
     await scheduleSingleNotification(schedule, hourToDisplay, hour, minute,
@@ -118,21 +172,16 @@ class NotificationController {
     // Calculate the number of notifications to schedule
     int
         numberOfNotifications = /*monthWeek.length */ // TODO: not currently supported by awesome_notifications
-        schedule.weekDay!.length *
+        schedule.weekDay.length *
             restrictedDays.length; // Number of notifications to schedule
 
-    int currentNumberOfNotifications =
-        await listAll().then((value) => value.length);
-
-    if (currentNumberOfNotifications + numberOfNotifications > 64) {
-      throw Exception('Too many notifications scheduled');
-    }
+    await checkLimitExceeded(numberOfNotifications);
 
     List<Future> notificationFutures = [];
 
     // TODO: not currently supported by awesome_notifications
     //for (var monthweek in monthWeek) {
-    for (var weekday in schedule.weekDay!) {
+    for (var weekday in schedule.weekDay) {
       var future = AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
@@ -188,12 +237,7 @@ class NotificationController {
       schedule.dayOdd,
     ).subtract(Duration(days: daysToSubtract));
 
-    int currentNumberOfNotifications =
-        await listAll().then((value) => value.length);
-
-    if (currentNumberOfNotifications + 1 > 64) {
-      throw Exception('Too many notifications scheduled');
-    }
+    await checkLimitExceeded(1);
 
     await AwesomeNotifications().createNotification(
         content: NotificationContent(

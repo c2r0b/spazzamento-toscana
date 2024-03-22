@@ -1,4 +1,4 @@
-import 'package:Spazzamento/models/schedule_info.dart';
+import '../models/schedule_info.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleMonthDayWidget extends StatelessWidget {

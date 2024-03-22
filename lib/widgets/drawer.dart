@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 import '../constants.dart';
@@ -41,8 +40,8 @@ class DrawerWidget extends StatelessWidget {
                       background: Container(
                         color: Colors.red,
                         alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 20),
-                        child: Icon(Icons.delete, color: Colors.white),
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                       child: Card(
                         child: ListTile(

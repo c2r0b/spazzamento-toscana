@@ -100,10 +100,8 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
     List<dynamic> activeDays = [];
 
     // Check if weekDay is a list or a single value and adjust accordingly
-    if (widget.schedule.weekDay != null) {
-      activeDays = widget.schedule.weekDay!;
-    }
-
+    activeDays = widget.schedule.weekDay;
+  
     String? location = widget.schedule.location == ''
         ? 'Tutta la strada'
         : widget.schedule.location;
