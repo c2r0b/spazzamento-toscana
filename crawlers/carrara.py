@@ -26,7 +26,7 @@ def extract_data_from_pdf(pdf_data):
 
         data.append({
             "street": line,
-            "locality": "CARRARA",
+            "locality": "MASSA-CARRARA",
             "schedule": [{
                 "from": from_time,
                 "to": to_time,
