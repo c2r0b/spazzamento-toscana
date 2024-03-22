@@ -196,7 +196,8 @@ class NotificationController {
             allowWhileIdle: true,
             preciseAlarm: true,
             repeats: true,
-            weekday: weekday - daysToSubtract,
+            weekday:
+                weekday - daysToSubtract < 1 ? 7 : weekday - daysToSubtract,
             hour: hour,
             minute: minute,
 

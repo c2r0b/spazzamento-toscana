@@ -10,6 +10,8 @@ base_url = "https://grosseto.ldpgis.it/rifiuti_comunali/pub/app"
 clear_json_file('GROSSETO')
 
 # Function to parse the 'day' field and convert it into the desired format
+
+
 def parse_day_field(day_field):
     if "TUTTI I GIORNI FERIALI" in day_field:
         return {"weekDay": [1, 2, 3, 4, 5, 6]}
@@ -33,6 +35,8 @@ def parse_day_field(day_field):
         return {}
 
 # Function to convert date format from "dd/mmm" to "dd-mm"
+
+
 def convert_date_format(date_str):
     months = {"gen": "01", "feb": "02", "mar": "03", "apr": "04", "mag": "05", "giu": "06",
               "lug": "07", "ago": "08", "set": "09", "ott": "10", "nov": "11", "dic": "12"}
@@ -40,6 +44,8 @@ def convert_date_format(date_str):
     return f"{day}-{months[month]}"
 
 # Function to update the JSON file with the new data for a street
+
+
 def update_json_file(street_data, street_name, locality):
     add_to_json_file('GROSSETO', {
         'street': street_name,
@@ -48,16 +54,18 @@ def update_json_file(street_data, street_name, locality):
     })
 
 # Function to get cleaning schedule
+
+
 def get_cleaning_schedule(street):
     # Get street parts
     url = f"{base_url}/get_spazzamenti_toponimo_json.php?codice={street['codice']}"
-    
+
     try:
         response = requests.get(url)
         response.raise_for_status()  # This will raise an exception for HTTP error codes
     except requests.RequestException as e:
         print(f"Request failed: {e}")
-        
+
     # remove leadeing and trailing parenthesis
     # read calendar as json
     text = response.text
@@ -67,11 +75,10 @@ def get_cleaning_schedule(street):
     schedule = []
     for entry in calendar:
         parsed_entry = parse_day_field(entry['descrizione'])
-        parsed_entry['source'] = entry['descrizione']
         parsed_entry['start'] = convert_date_format(entry['data_inizio'])
         parsed_entry['end'] = convert_date_format(entry['data_fine'])
-        parsed_entry['morning'] = entry['mattino_pomeriggio'] == 'MATTINO' or 'MATTINO' in entry['descrizione']
-        parsed_entry['afternoon'] = entry['mattino_pomeriggio'] == 'POMERIGGIO' or 'POMERIGGIO' in entry['descrizione']
+        parsed_entry['morning'] = entry['mattino_pomeriggio'] == 'Mattino' or 'Mattino' in entry['descrizione']
+        parsed_entry['afternoon'] = entry['mattino_pomeriggio'] == 'Pomeriggio' or 'Pomeriggio' in entry['descrizione']
         schedule.append(parsed_entry)
 
     return schedule

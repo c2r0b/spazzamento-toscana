@@ -68,11 +68,10 @@ def get_cleaning_schedule(street):
     schedule = []
     for entry in calendar:
         parsed_entry = parse_day_field(entry['descrizione'])
-        parsed_entry['source'] = entry['descrizione']
         parsed_entry['start'] = convert_date_format(entry['data_inizio'])
         parsed_entry['end'] = convert_date_format(entry['data_fine'])
-        parsed_entry['morning'] = entry['mattino_pomeriggio'] == 'MATTINO' or 'MATTINO' in entry['descrizione']
-        parsed_entry['afternoon'] = entry['mattino_pomeriggio'] == 'POMERIGGIO' or 'POMERIGGIO' in entry['descrizione']
+        parsed_entry['morning'] = entry['mattino_pomeriggio'] == 'Mattino' or 'Mattino' in entry['descrizione']
+        parsed_entry['afternoon'] = entry['mattino_pomeriggio'] == 'Pomeriggio' or 'Pomeriggio' in entry['descrizione']
         schedule.append(parsed_entry)
 
     return schedule

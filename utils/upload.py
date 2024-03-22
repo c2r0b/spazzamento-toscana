@@ -16,7 +16,7 @@ directory = './data'
 for filename in os.listdir(directory):
     # Construct the full path to the file
     filepath = os.path.join(directory, filename)
-    
+
     # Check if it's a file
     if os.path.isfile(filepath):
         # Open and read the file
@@ -32,7 +32,7 @@ for filename in os.listdir(directory):
 
                 # Construct a unique key for each row - adjust this based on your unique constraints
                 unique_key = f"{data['city']}_{street['street']}_{county}"
-                
+
                 # Update the dictionary only if the key is not present
                 if unique_key not in rows_to_upsert:
                     rows_to_upsert[unique_key] = {
@@ -40,7 +40,7 @@ for filename in os.listdir(directory):
                         'city': data['city'],
                         'street': street['street'],
                         'county': county,
-                        'schedule': json.dumps({ 'data': street['schedule'] })
+                        'schedule': json.dumps({'data': street['schedule']})
                     }
 
 # Convert the dictionary values to a list for upserting
@@ -50,4 +50,4 @@ unique_rows_to_upsert = list(rows_to_upsert.values())
 if unique_rows_to_upsert:
     supabase.table('data').upsert(unique_rows_to_upsert).execute()
 
-print ("> Upload completed <")
+print("> Upload completed <")

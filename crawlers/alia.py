@@ -10,6 +10,8 @@ from utils.lib import clear_json_file, add_to_json_file
 base_url = "https://www.aliaserviziambientali.it/puliziastrade"
 
 # Function to map Italian days to numerical representation (Monday=1, Sunday=7)
+
+
 def map_weekday(day):
     days = {
         "Lunedi": 1,
@@ -23,11 +25,15 @@ def map_weekday(day):
     return days.get(day, 0)
 
 # Function to extract time from the 'time' string
+
+
 def extract_time(time_str):
     time_parts = time_str.split('alle')
     return time_parts[0].strip().replace('dalle ', ''), time_parts[1].strip()
 
 # Function to update the JSON file with the new data for a street
+
+
 def update_json_file(city, street_data, street_name):
     add_to_json_file(city, {
         'street': street_name,
@@ -35,6 +41,8 @@ def update_json_file(city, street_data, street_name):
     })
 
 # Function to get cleaning schedule
+
+
 def get_cleaning_schedule(street):
     # Get street parts
     url = f"{base_url}/main/get_tratti"
@@ -60,7 +68,7 @@ def get_cleaning_schedule(street):
 
         tratto = tratto.replace('&#039;', "'")
         print(tratto)
-        
+
         url = f"{base_url}/pulizie/calcola_data"
         data = {
             "id_strada": street['id_strada'],
@@ -82,7 +90,7 @@ def get_cleaning_schedule(street):
         response = response.split('<center>')[-1]
         response = response.split('<\/center>')[0]
         data = response.split(' dalle')
-        
+
         if len(data) < 2:
             continue
 
@@ -118,6 +126,7 @@ def get_cleaning_schedule(street):
 
     return schedule
 
+
 def update_city(city):
     # List of streets to scrape
     # Navigate to the page
@@ -144,6 +153,7 @@ def update_city(city):
         street_schedule = get_cleaning_schedule(street)
         update_json_file(city, street_schedule, street['nome'])
 
+
 # get list of cities
 fp = urllib.request.urlopen(base_url)
 content = fp.read()
@@ -156,7 +166,8 @@ soup = BeautifulSoup(html, 'html.parser')
 cities = []
 
 # Find the select element by its name or ID (assuming 'comune' is the ID or name)
-select_element = soup.find('select', {'name': 'comune'}) or soup.find('select', {'id': 'comune'})
+select_element = soup.find('select', {'name': 'comune'}) or soup.find(
+    'select', {'id': 'comune'})
 
 # Extract all the option values within the select element
 if select_element:

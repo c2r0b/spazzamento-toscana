@@ -1,16 +1,22 @@
-# Spazzamento
+# Spazzamento Toscana
+Flutter app for the management of the street washing service info in Tuscany.
 
-A new Flutter project.
+## Description
+This app is designed to provide the citizens of Tuscany with information about the street washing service in their area. 
 
-## Getting Started
+## Features
+- [x] Search for the street washing service in a specific municipality
+- [x] Receive notifications when the service is about to start in the selected municipality
+- [x] View the days and times when the service is active in the selected municipality
 
-This project is a starting point for a Flutter application.
+## Technologies
+- [Flutter](https://flutter.dev/): app development
+- [Supabase](https://supabase.io/): database
+- [Python](https://www.python.org/): data scraping
 
-A few resources to get you started if this is your first Flutter project:
+## Data source
+The python script `run.py` is used to scrape the data from the official websites of the Tuscany region. The data is then stored in json files inside the `data` folder.  
+The same script is used to upload the data to the Supabase database.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## License
+© 2024 Spazzamento Toscana by [c2r0b](https://github.com/c2r0b)

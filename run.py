@@ -2,9 +2,11 @@ import os
 import inquirer
 import subprocess
 
+
 def list_python_scripts(directory):
     """List all Python scripts in the specified directory."""
     return [f for f in os.listdir(directory) if f.endswith('.py')]
+
 
 def execute_script(script_path):
     """Execute the specified Python script."""
@@ -16,13 +18,14 @@ def execute_script(script_path):
         # Print error message in red
         print("\033[91mThere was an error executing the script.\033[0m\n")
 
+
 def main():
     actions = ['Retrieve', 'Upload', 'Exit']
     questions = [
         inquirer.List('action',
                       message="Choose an action",
                       choices=actions,
-                     ),
+                      ),
     ]
 
     while True:
@@ -36,15 +39,17 @@ def main():
                     inquirer.List('script',
                                   message="Select a script to execute",
                                   choices=scripts,
-                                 ),
+                                  ),
                 ]
                 script_answer = inquirer.prompt(script_question)
-                execute_script(os.path.join('crawlers', script_answer['script']))
+                execute_script(os.path.join(
+                    'crawlers', script_answer['script']))
             else:
                 print("No Python scripts found in the 'crawlers' directory.")
         elif action == 'Upload':
             confirm_question = [
-                inquirer.Confirm('confirm', message="Are you sure you want to upload?", default=False),
+                inquirer.Confirm(
+                    'confirm', message="Are you sure you want to upload?", default=False),
             ]
             confirm_answer = inquirer.prompt(confirm_question)
             if confirm_answer['confirm']:
@@ -54,6 +59,7 @@ def main():
         elif action == 'Exit':
             print("Exiting...")
             break
+
 
 if __name__ == "__main__":
     main()

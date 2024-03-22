@@ -6,6 +6,7 @@ from utils.lib import clear_json_file, update_json_file, remove_duplicates, down
 # clear content if exists, otherwise create it
 clear_json_file('PISA')
 
+
 def extract_info(input_str):
     # Initialize the dictionary
     result = {
@@ -22,13 +23,13 @@ def extract_info(input_str):
 
     # Determine the side based on the starting letter
     if input_str.startswith('D'):
-      result["rightSide"] = True
+        result["rightSide"] = True
     elif input_str.startswith('S'):
-      result["leftSide"] = True
+        result["leftSide"] = True
     elif input_str.startswith('INTER'):
-      result["internalSide"] = True
+        result["internalSide"] = True
     elif input_str.startswith('ESTER'):
-      result["externalSide"] = True
+        result["externalSide"] = True
 
     # Extract the week numbers and weekday
     week_day_mapping = {
@@ -60,17 +61,18 @@ def extract_info(input_str):
 
     return result
 
+
 def extract_schedule(street):
     street_name = street.split('\n')[0].strip()
 
     if not street_name.startswith('PIAZZA'):
-      street_name = 'Via ' + street_name
-    
+        street_name = 'Via ' + street_name
+
     schedules = street.split('\n')[1:]
 
     result = {
-      "street": street_name,
-      "schedule": []
+        "street": street_name,
+        "schedule": []
     }
 
     # if a schedule starts with "da "/"e da " merge it with the previous one
@@ -80,7 +82,7 @@ def extract_schedule(street):
         if re.match(r'\s*da\s[\s\w]+', schedules[i]) or re.match(r'\s*e da\s[\s\w]+', schedules[i]) or re.match(r'\s*compreso\s[\s\w]+', schedules[i]):
             schedules[i-1] += ' ' + schedules[i]
             schedules[i] = ''
-    
+
     # if a schedule contains only "D" or "S" merge it with the next one
     for i in range(len(schedules)-1):
         if schedules[i].replace(' ', '') == '':
@@ -88,14 +90,15 @@ def extract_schedule(street):
         if re.match(r'\s*[DS]\s*$', schedules[i]):
             schedules[i+1] = schedules[i] + ' ' + schedules[i+1]
             schedules[i] = ''
-    
+
     for schedule in schedules:
         if schedule.replace(' ', '').replace('TRAMONTANA', '') == '':
             continue
         data = extract_info(schedule)
         result["schedule"].append(data)
-    
+
     return result
+
 
 def extract_data_from_pdf(pdf_data):
     # Open the PDF from bytes data
@@ -103,19 +106,20 @@ def extract_data_from_pdf(pdf_data):
     text = ""
     for page in doc:
         text += page.get_text()
-    
+
     text = re.split('MEZZOGIORNO', text)[1]
     text = re.split('DISPONE', text)[0]
-    
+
     streets = re.split('•', text)[1:]
 
     data = []
     for street in streets:
         result = extract_schedule(street)
         if result:
-          data.append(result)
+            data.append(result)
 
     return remove_duplicates(data)
+
 
 pdf_url = "https://www.comune.pisa.it/sites/default/files/2013_05_13_11_22_29.pdf"
 pdf_data = download_pdf(pdf_url)
