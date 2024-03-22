@@ -19,12 +19,19 @@ The python script `run.py` is used to scrape the data from the official websites
 The same script is used to upload the data to the Supabase database.
 
 ## Environment variables
-You need to create a `.env` file in the root directory of the project following the example below:
+You need to create a `.env.py` file in the root directory of the project following the example below:
 ```env
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
 SUPABASE_EMAIL=your_supabase_email
 SUPABASE_PASSWORD=your_supabase_password
+```
+This file is used to store the Supabase credentials for the python upload script.  
+
+You need to create a `.env.app` file in the root directory of the project following the example below, to store the Supabase URL for the Flutter app:
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_anon_key
 ```
 
 ## License
