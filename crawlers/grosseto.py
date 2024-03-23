@@ -1,5 +1,4 @@
 import requests
-import re
 import json
 import time
 from utils.lib import clear_json_file, add_to_json_file, day_to_number

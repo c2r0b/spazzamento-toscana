@@ -1,5 +1,4 @@
 import fitz
-import json
 import re
 from utils.lib import clear_json_file, update_json_file, remove_duplicates, download_pdf, day_to_number
 
