@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 
@@ -104,16 +104,29 @@ class NotificationController {
       'hoursToSubtract': hoursToSubtract.toString(),
     };
 
+    String title = '';
+
+    if (schedule.morning != null && schedule.from == null) {
+      title = 'Spazzamento questa mattina';
+    } else if (schedule.afternoon != null && schedule.from == null) {
+      title = 'Spazzamento questo pomeriggio';
+    } else {
+      title =
+          'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    }
+
+    title = '$title  $suffix';
+
     if (schedule.monthWeek.isEmpty &&
         schedule.dayEven == null &&
         schedule.dayOdd == null) {
       await scheduleRepeatNotification(schedule, hourToDisplay, hour, minute,
-          suffix, description, payloadMap, daysToSubtract);
+          title, description, payloadMap, daysToSubtract);
       return;
     }
 
-    await scheduleSingleNotification(schedule, hourToDisplay, hour, minute,
-        suffix, description, payloadMap, daysToSubtract);
+    await scheduleMultipleNotifications(schedule, hourToDisplay, hour, minute,
+        title, description, payloadMap, daysToSubtract);
   }
 
   static DateTime getNextNotificationDate(
@@ -153,41 +166,26 @@ class NotificationController {
       int hourToDisplay,
       int hour,
       int minute,
-      String suffix,
+      String title,
       String description,
       Map<String, String> payloadMap,
       int daysToSubtract) async {
     List<int?> restrictedDays = [];
 
-    // Ensure monthWeek is not null
-    // defaulting to [0] if necessary to ensure it executes at least once
-    // TODO: not currently supported by awesome_notifications
-    /*List<int?> monthWeek = [];
-    if (schedule.monthWeek.isNotEmpty) {
-      monthWeek = schedule.monthWeek;
-    } else {
-      monthWeek.add(0);
-    }*/
-
     // Calculate the number of notifications to schedule
-    int
-        numberOfNotifications = /*monthWeek.length */ // TODO: not currently supported by awesome_notifications
-        schedule.weekDay.length *
-            restrictedDays.length; // Number of notifications to schedule
+    int numberOfNotifications = schedule.weekDay.length *
+        restrictedDays.length; // Number of notifications to schedule
 
     await checkLimitExceeded(numberOfNotifications);
 
     List<Future> notificationFutures = [];
 
-    // TODO: not currently supported by awesome_notifications
-    //for (var monthweek in monthWeek) {
     for (var weekday in schedule.weekDay) {
       var future = AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
             channelKey: 'spazzamento_reminder_channel',
-            title:
-                'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $suffix',
+            title: title,
             body: description,
             notificationLayout: NotificationLayout.Default,
             payload: payloadMap,
@@ -200,9 +198,6 @@ class NotificationController {
                 weekday - daysToSubtract < 1 ? 7 : weekday - daysToSubtract,
             hour: hour,
             minute: minute,
-
-            // TODO: not currently supported by awesome_notifications
-            //weekOfMonth: monthweek == 0 ? null : monthweek
           ));
 
       notificationFutures.add(future);
@@ -213,7 +208,6 @@ class NotificationController {
         await Future.wait(notificationFutures);
         notificationFutures.clear();
       }
-      //}
     }
 
     // Wait for any remaining futures
@@ -222,30 +216,47 @@ class NotificationController {
     }
   }
 
-  static Future<void> scheduleSingleNotification(
+  static Future<void> scheduleMultipleNotifications(
       ScheduleInfo schedule,
       int hourToDisplay,
       int hour,
       int minute,
-      String suffix,
+      String title,
       String description,
       Map<String, String> payloadMap,
       int daysToSubtract) async {
-    DateTime date = getNextNotificationDate(
-      schedule.monthWeek,
-      schedule.weekDay,
-      schedule.dayEven,
-      schedule.dayOdd,
-    ).subtract(Duration(days: daysToSubtract));
+    // Determine the number of notifications based on the platform
+    int notificationCount = Platform.isAndroid ? 100 : 32;
 
-    await checkLimitExceeded(1);
+    List<Future> notificationFutures = [];
 
-    await AwesomeNotifications().createNotification(
+    await checkLimitExceeded(notificationCount);
+
+    for (int i = 0; i < notificationCount; i++) {
+      DateTime date = getNextNotificationDate(
+        schedule.monthWeek,
+        schedule.weekDay,
+        schedule.dayEven,
+        schedule.dayOdd,
+      ).subtract(Duration(days: daysToSubtract + i));
+
+      bool isLastNotification = i == notificationCount - 1;
+
+      List<NotificationActionButton> actionButtons = isLastNotification
+          ? [
+              // button to reschedule the notification
+              NotificationActionButton(
+                key: 'reschedule',
+                label: 'Ripeti la prossima volta',
+              ),
+            ]
+          : [];
+
+      var future = AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
           channelKey: 'spazzamento_reminder_channel',
-          title:
-              'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $suffix',
+          title: title,
           body: description,
           notificationLayout: NotificationLayout.Default,
           payload: payloadMap,
@@ -259,13 +270,22 @@ class NotificationController {
             year: date.year,
             hour: hour,
             minute: minute),
-        actionButtons: [
-          // button to reschedule the notification
-          NotificationActionButton(
-            key: 'reschedule',
-            label: 'Ripeti la prossima volta',
-          ),
-        ]);
+        actionButtons: actionButtons,
+      );
+
+      notificationFutures.add(future);
+
+      // Throttle the creation to avoid overloading
+      if (notificationFutures.length >= 30) {
+        // Adjust this number based on performance
+        await Future.wait(notificationFutures);
+        notificationFutures.clear();
+      }
+    }
+    // Wait for any remaining futures
+    if (notificationFutures.isNotEmpty) {
+      await Future.wait(notificationFutures);
+    }
   }
 
   static Future<List<NotificationModel>> listAll() async {

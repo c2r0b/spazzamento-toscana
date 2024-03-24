@@ -4,8 +4,9 @@ import subprocess
 
 
 def list_python_scripts(directory):
-    """List all Python scripts in the specified directory."""
-    return [f for f in os.listdir(directory) if f.endswith('.py')]
+    python_files = [f for f in os.listdir(directory) if f.endswith('.py')]
+    python_files.sort()  # Sort the list alphabetically
+    return python_files
 
 
 def execute_script(script_path):

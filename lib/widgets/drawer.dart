@@ -145,7 +145,7 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text('Per segnalare un problema scrivi a: '),
+                        const Text(contacts),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () {

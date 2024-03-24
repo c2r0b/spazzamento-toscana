@@ -19,6 +19,8 @@ class ScheduleInfo {
   final bool? internalSide;
   final bool? externalSide;
   final bool? summer;
+  final bool? morning;
+  final bool? afternoon;
   final String? start;
   final String? end;
 
@@ -42,6 +44,8 @@ class ScheduleInfo {
       this.internalSide,
       this.externalSide,
       this.summer,
+      this.morning,
+      this.afternoon,
       this.start,
       this.end})
       : id = _generateId(
@@ -58,6 +62,8 @@ class ScheduleInfo {
             numberEven,
             numberOdd,
             summer,
+            morning,
+            afternoon,
             start,
             end);
 
@@ -75,9 +81,11 @@ class ScheduleInfo {
       bool? numberEven,
       bool? numberOdd,
       bool? summer,
+      bool? morning,
+      bool? afternoon,
       String? start,
       String? end) {
-    return '$city-$county-$street-$location-$dayEven-$dayOdd-$numberEven-$numberOdd-$summer-$start-$end-${weekDay.join('-')}-${monthWeek.join('-')}-$from-$to';
+    return '$city-$county-$street-$location-$dayEven-$dayOdd-$numberEven-$numberOdd-$summer-$start-$end-${weekDay.join('-')}-${monthWeek.join('-')}-$from-$to-$morning-$afternoon';
   }
 
   factory ScheduleInfo.fromJson(
@@ -112,6 +120,8 @@ class ScheduleInfo {
       internalSide: json['internalSide'],
       externalSide: json['externalSide'],
       summer: json['summer'],
+      morning: json['morning'],
+      afternoon: json['afternoon'],
       start: json['start'],
       end: json['end'],
     );
@@ -138,6 +148,8 @@ class ScheduleInfo {
       'internalSide': internalSide,
       'externalSide': externalSide,
       'summer': summer,
+      'morning': morning,
+      'afternoon': afternoon,
       'start': start,
       'end': end,
     };

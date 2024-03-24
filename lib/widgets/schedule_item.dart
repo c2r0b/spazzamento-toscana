@@ -101,7 +101,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
 
     // Check if weekDay is a list or a single value and adjust accordingly
     activeDays = widget.schedule.weekDay;
-  
+
     String? location = widget.schedule.location == ''
         ? 'Tutta la strada'
         : widget.schedule.location;
@@ -176,6 +176,22 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('${widget.schedule.from} - ${widget.schedule.to}'),
+                  ScheduleStreetSideWidget(schedule: widget.schedule)
+                ],
+              ),
+            if (widget.schedule.morning != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('MATTINO'),
+                  ScheduleStreetSideWidget(schedule: widget.schedule)
+                ],
+              ),
+            if (widget.schedule.afternoon != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('POMERIGGIO'),
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
