@@ -80,22 +80,39 @@ class NotificationController {
 
   static Future<void> activate(
       ScheduleInfo schedule, String currentAddress, int hoursToSubtract) async {
-    if (!schedule.weekDay.isNotEmpty || schedule.from == null) {
+    String suffix = buildSuffix(schedule);
+    String description = currentAddress;
+
+    String title = '';
+    String from = '';
+    if (schedule.morning != null && schedule.from == null) {
+      title = 'Spazzamento questa mattina';
+      from = '08:00';
+    } else if (schedule.afternoon != null && schedule.from == null) {
+      title = 'Spazzamento questo pomeriggio';
+      from = '14:00';
+    }
+
+    title = '$title  $suffix';
+
+    if (!schedule.weekDay.isNotEmpty || from == null) {
       return;
     }
 
     int daysToSubtract = 0;
-    int hourToDisplay = int.parse(schedule.from!.split(':')[0]);
+    int hourToDisplay = int.parse(from!.split(':')[0]);
     int hour = hourToDisplay - hoursToSubtract;
-    int minute = int.parse(schedule.from!.split(':')[1]);
+    int minute = int.parse(from!.split(':')[1]);
+
+    if (title == '') {
+      title =
+          'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    }
 
     if (hour < 0) {
       hour = 24 + hour;
       daysToSubtract = 1;
     }
-
-    String suffix = buildSuffix(schedule);
-    String description = currentAddress;
 
     Map<String, String> payloadMap = {
       'id': schedule.id,
@@ -103,19 +120,6 @@ class NotificationController {
       'schedule': jsonEncode(schedule.toJson()),
       'hoursToSubtract': hoursToSubtract.toString(),
     };
-
-    String title = '';
-
-    if (schedule.morning != null && schedule.from == null) {
-      title = 'Spazzamento questa mattina';
-    } else if (schedule.afternoon != null && schedule.from == null) {
-      title = 'Spazzamento questo pomeriggio';
-    } else {
-      title =
-          'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
-    }
-
-    title = '$title  $suffix';
 
     if (schedule.monthWeek.isEmpty &&
         schedule.dayEven == null &&

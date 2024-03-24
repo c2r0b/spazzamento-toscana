@@ -179,7 +179,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
-            if (widget.schedule.morning != null)
+            if (widget.schedule.morning == true)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -187,7 +187,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
-            if (widget.schedule.afternoon != null)
+            if (widget.schedule.afternoon == false)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
