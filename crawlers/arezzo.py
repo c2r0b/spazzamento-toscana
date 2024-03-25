@@ -18,7 +18,7 @@ def parse_day_field(day_field):
     elif "TUTTI I GIORNI" in day_field:
         return {"weekDay": [1, 2, 3, 4, 5, 6, 7]}
     elif "TUTTI I" in day_field:
-        days = day_field.split("TUTTI I ")[1].split("-")
+        days = day_field.split("TUTTI I ")[1].split(' ')[0].split("-")
         return {"weekDay": [day_to_number(day.strip()) for day in days]}
     elif "°" in day_field:
         # This will need to be adjusted based on the exact format of 'day' when it includes "°"
