@@ -91,6 +91,8 @@ class NotificationController {
     } else if (schedule.afternoon != null && schedule.from == null) {
       title = 'Spazzamento questo pomeriggio';
       from = '14:00';
+    } else {
+      from = schedule.from!;
     }
 
     title = '$title  $suffix';
@@ -133,9 +135,8 @@ class NotificationController {
         title, description, payloadMap, daysToSubtract);
   }
 
-  static DateTime getNextNotificationDate(
+  static DateTime getNextNotificationDate(DateTime currentDate,
       List<int?> monthWeek, List<int?> weekday, bool? dayEven, bool? dayOdd) {
-    DateTime currentDate = DateTime.now();
     while (true) {
       // Check if the current date's week of the month matches any in monthWeek
       int weekOfMonth =
@@ -236,13 +237,16 @@ class NotificationController {
 
     await checkLimitExceeded(notificationCount);
 
+    DateTime startDate = DateTime.now();
     for (int i = 0; i < notificationCount; i++) {
       DateTime date = getNextNotificationDate(
+        startDate,
         schedule.monthWeek,
         schedule.weekDay,
         schedule.dayEven,
         schedule.dayOdd,
       ).subtract(Duration(days: daysToSubtract + i));
+      startDate = date;
 
       bool isLastNotification = i == notificationCount - 1;
 

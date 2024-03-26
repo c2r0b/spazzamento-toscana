@@ -187,7 +187,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
-            if (widget.schedule.afternoon == false)
+            if (widget.schedule.afternoon == true)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
