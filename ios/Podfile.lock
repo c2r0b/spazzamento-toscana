@@ -1,6 +1,9 @@
 PODS:
   - app_links (0.0.1):
     - Flutter
+  - awesome_notifications (0.9.3):
+    - Flutter
+    - IosAwnCore (~> 0.9.3)
   - Flutter (1.0.0)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
@@ -8,6 +11,7 @@ PODS:
     - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
+  - IosAwnCore (0.9.3)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -21,6 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
@@ -30,9 +35,15 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
+SPEC REPOS:
+  trunk:
+    - IosAwnCore
+
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  awesome_notifications:
+    :path: ".symlinks/plugins/awesome_notifications/ios"
   Flutter:
     :path: Flutter
   flutter_keyboard_visibility:
@@ -52,15 +63,17 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: e70ca16b4b0f88253b3b3660200d4a10b4ea9795
+  awesome_notifications: 66d28ab7174ca2823b04d275cb043e0a4a3eb9cf
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  geocoding_ios: a389ea40f6f548de6e63006a2e31bf66ff80769a
+  geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
   geolocator_apple: 9157311f654584b9bb72686c55fc02a97b73f461
+  IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   pointer_interceptor_ios: 9280618c0b2eeb80081a343924aa8ad756c21375
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
 
-PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
+PODFILE CHECKSUM: ad680e56f91204f9926c306d3a8908d2bd691f9a
 
 COCOAPODS: 1.15.2

@@ -34,12 +34,20 @@ class _HomePageState extends State<HomePage> {
   bool locationServiceEnabled = true;
   bool locationPermissionEnabled = true;
   bool isLoading = false;
-  double fabHeight = 220;
+  double fabHeight = 0;
 
   @override
   void initState() {
     super.initState();
     mapController = MapController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      setState(() {
+        fabHeight = screenHeight * 0.27;
+      });
+    });
+
     NotificationController.requesPermission()!.then((value) async {
       _centerOnUserLocation();
     });
@@ -122,8 +130,6 @@ class _HomePageState extends State<HomePage> {
       _centerOnUserLocation();
     }
   }
-
-  void _refreshHomeScreen() {}
 
   @override
   Widget build(BuildContext context) {

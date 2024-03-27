@@ -4,6 +4,7 @@ import '../models/address.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 
 Future<StateUpdate> determinePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -60,7 +61,7 @@ Future<StateUpdate> getUserLocation() async {
   if (placemarks.isNotEmpty) {
     stateUpdate.address = Address.fromPlacemark(placemarks.first);
     stateUpdate.currentAddress =
-        '${placemarks.first.street}, ${placemarks.first.locality}';
+        '${placemarks.first.thoroughfare}, ${placemarks.first.locality}';
   } else {
     stateUpdate.currentAddress = 'Indirizzo non trovato';
   }
@@ -69,9 +70,9 @@ Future<StateUpdate> getUserLocation() async {
 
 Future<List<Placemark>> lookupAddress(LatLng position) async {
   // Use geocoding to find the address from the LatLng position
-  List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude, position.longitude,
-      localeIdentifier: 'it_IT');
+  await setLocaleIdentifier('it_IT');
+  List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
   if (placemarks.isNotEmpty) {
     return placemarks;
   } else {
