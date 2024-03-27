@@ -95,8 +95,6 @@ class NotificationController {
       from = schedule.from!;
     }
 
-    title = '$title  $suffix';
-
     if (!schedule.weekDay.isNotEmpty || from == null) {
       return;
     }
@@ -110,6 +108,8 @@ class NotificationController {
       title =
           'Spazzamento alle ${hourToDisplay.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
     }
+
+    title = '$title  $suffix';
 
     if (hour < 0) {
       hour = 24 + hour;
@@ -138,6 +138,9 @@ class NotificationController {
   static DateTime getNextNotificationDate(DateTime currentDate,
       List<int?> monthWeek, List<int?> weekday, bool? dayEven, bool? dayOdd) {
     while (true) {
+      // Increment the date by one day and repeat the checks
+      currentDate = currentDate.add(const Duration(days: 1));
+
       // Check if the current date's week of the month matches any in monthWeek
       int weekOfMonth =
           ((currentDate.day + 7 - currentDate.weekday) / 7).ceil();
@@ -160,9 +163,6 @@ class NotificationController {
       if (isWeekOfMonthValid && isWeekdayValid && isDayEvenOddValid) {
         return currentDate;
       }
-
-      // Increment the date by one day and repeat the checks
-      currentDate = currentDate.add(const Duration(days: 1));
     }
   }
 
@@ -199,8 +199,9 @@ class NotificationController {
             allowWhileIdle: true,
             preciseAlarm: true,
             repeats: true,
-            weekday:
-                weekday - daysToSubtract < 1 ? 7 : weekday - daysToSubtract,
+            weekday: ((weekday - daysToSubtract) < 1)
+                ? 7
+                : (weekday - daysToSubtract),
             hour: hour,
             minute: minute,
           ));
@@ -245,8 +246,9 @@ class NotificationController {
         schedule.weekDay,
         schedule.dayEven,
         schedule.dayOdd,
-      ).subtract(Duration(days: daysToSubtract + i));
+      );
       startDate = date;
+      date = date.subtract(Duration(days: daysToSubtract));
 
       bool isLastNotification = i == notificationCount - 1;
 
