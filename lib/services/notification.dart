@@ -120,7 +120,7 @@ class NotificationController {
       'id': schedule.id,
       'address': currentAddress,
       'schedule': jsonEncode(schedule.toJson()),
-      'hoursToSubtract': hoursToSubtract.toString(),
+      'hoursToSubtract': hoursToSubtract.toString()
     };
 
     if (schedule.monthWeek.isEmpty &&
@@ -183,10 +183,8 @@ class NotificationController {
 
     await checkLimitExceeded(numberOfNotifications);
 
-    List<Future> notificationFutures = [];
-
     for (var weekday in schedule.weekDay) {
-      var future = AwesomeNotifications().createNotification(
+      await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
             channelKey: 'spazzamento_reminder_channel',
@@ -205,20 +203,6 @@ class NotificationController {
             hour: hour,
             minute: minute,
           ));
-
-      notificationFutures.add(future);
-
-      // Throttle the creation to avoid overloading
-      if (notificationFutures.length >= 10) {
-        // Adjust this number based on performance
-        await Future.wait(notificationFutures);
-        notificationFutures.clear();
-      }
-    }
-
-    // Wait for any remaining futures
-    if (notificationFutures.isNotEmpty) {
-      await Future.wait(notificationFutures);
     }
   }
 
@@ -262,7 +246,7 @@ class NotificationController {
             ]
           : [];
 
-      var future = AwesomeNotifications().createNotification(
+      await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647),
           channelKey: 'spazzamento_reminder_channel',
@@ -282,19 +266,6 @@ class NotificationController {
             minute: minute),
         actionButtons: actionButtons,
       );
-
-      notificationFutures.add(future);
-
-      // Throttle the creation to avoid overloading
-      if (notificationFutures.length >= 30) {
-        // Adjust this number based on performance
-        await Future.wait(notificationFutures);
-        notificationFutures.clear();
-      }
-    }
-    // Wait for any remaining futures
-    if (notificationFutures.isNotEmpty) {
-      await Future.wait(notificationFutures);
     }
   }
 
