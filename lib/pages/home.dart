@@ -133,56 +133,69 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBarWidget(title: widget.title),
-      drawer: const DrawerWidget(),
-      body: Stack(
-        children: <Widget>[
-          MapWidget(
-              mapController: mapController, currentPosition: _currentPosition),
-          SearchBarWidget(
-              typeAheadController: _typeAheadController,
-              onSelected: onSelected),
-          Stack(
-            alignment:
-                Alignment.bottomCenter, // Align the FAB at the bottom center
+    return GestureDetector(
+        onTap: () {
+          // Call this method here to hide the keyboard and unfocus any text field when the user taps
+          // outside of the TextField/TypeAheadField.
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBarWidget(title: widget.title),
+          drawer: const DrawerWidget(),
+          body: Stack(
             children: <Widget>[
-              NotificationListener<DraggableScrollableNotification>(
-                  onNotification: (notification) {
-                    setState(() {
-                      // Adjust the FAB position based on the sheet's extent
-                      // You can fine-tune the calculation below to get the desired effect
-                      final screenHeight = MediaQuery.of(context).size.height;
-                      final sheetHeight = screenHeight * notification.extent;
+              MapWidget(
+                  mapController: mapController,
+                  currentPosition: _currentPosition),
+              SearchBarWidget(
+                  typeAheadController: _typeAheadController,
+                  onSelected: onSelected),
+              Stack(
+                alignment: Alignment
+                    .bottomCenter, // Align the FAB at the bottom center
+                children: <Widget>[
+                  NotificationListener<DraggableScrollableNotification>(
+                      onNotification: (notification) {
+                        setState(() {
+                          // Adjust the FAB position based on the sheet's extent
+                          // You can fine-tune the calculation below to get the desired effect
+                          final screenHeight =
+                              MediaQuery.of(context).size.height;
+                          final sheetHeight =
+                              screenHeight * notification.extent;
 
-                      // Calculate the FAB height to be just above the sheet
-                      fabHeight = sheetHeight * 0.9;
-                    });
-                    return true;
-                  },
-                  child: DraggableBottomWidget(
-                      currentAddress: _currentAddress,
-                      selectedSchedule: selectedSchedule,
-                      locationPermissionEnabled: locationPermissionEnabled,
-                      locationServiceEnabled: locationServiceEnabled,
-                      enableLocationService: _enableLocationService,
-                      isLoading: isLoading)),
-              Positioned(
-                bottom: fabHeight +
-                    10, // Use the dynamic height based on sheet position
-                right: 16, // Standard right padding for the FAB
-                child: FloatingActionButton(
-                  onPressed: _centerOnUserLocation,
-                  tooltip: 'Dove mi trovo',
-                  backgroundColor: const Color.fromRGBO(0, 41, 67, 1.0),
-                  child: const Icon(Icons.my_location),
-                ),
+                          // Calculate the FAB height to be just above the sheet
+                          fabHeight = sheetHeight * 0.9;
+                        });
+                        return true;
+                      },
+                      child: DraggableBottomWidget(
+                          currentAddress: _currentAddress,
+                          selectedSchedule: selectedSchedule,
+                          locationPermissionEnabled: locationPermissionEnabled,
+                          locationServiceEnabled: locationServiceEnabled,
+                          enableLocationService: _enableLocationService,
+                          isLoading: isLoading)),
+                  Positioned(
+                    bottom: fabHeight +
+                        10, // Use the dynamic height based on sheet position
+                    right: 16, // Standard right padding for the FAB
+                    child: FloatingActionButton(
+                      onPressed: _centerOnUserLocation,
+                      tooltip: 'Dove mi trovo',
+                      backgroundColor: const Color.fromRGBO(0, 41, 67, 1.0),
+                      child: const Icon(Icons.my_location),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
