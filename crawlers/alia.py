@@ -49,14 +49,14 @@ def get_cleaning_schedule(street):
         "id_strada": street['id_strada']
     }
     try:
-        response = requests.post(url, data=data)
+        response = requests.post(url, data=data, timeout=20)
         response.raise_for_status()  # This will raise an exception for HTTP error codes
+        parts = response.json()
+        if not parts:
+            parts = [{'tratto': ''}]
     except requests.RequestException as e:
         print(f"Request failed: {e}")
-    parts = response.json()
-
-    if not parts:
-        parts = [{'tratto': ''}]
+        return []
 
     schedule = []
     for p in parts:
@@ -77,10 +77,11 @@ def get_cleaning_schedule(street):
             "comune": "FIRENZE"
         }
         try:
-            response = requests.post(url, data=data)
+            response = requests.post(url, data=data, timeout=20)
             response.raise_for_status()  # This will raise an exception for HTTP error codes
         except requests.RequestException as e:
             print(f"Request failed: {e}")
+            continue
 
         # of the response html, get the third <center> tag content
         response = response.text
@@ -136,7 +137,7 @@ def update_city(city):
 
     # Send a GET request to the URL
     try:
-        response = requests.post(url, data=data)
+        response = requests.post(url, data=data, timeout=20)
         response.raise_for_status()  # This will raise an exception for HTTP error codes
     except requests.RequestException as e:
         print(f"Request failed: {e}")
