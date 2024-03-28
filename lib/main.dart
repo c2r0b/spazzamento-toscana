@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Spazzamento',
       theme: themeData,
       home: const HomePage(title: 'Spazzamento'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
