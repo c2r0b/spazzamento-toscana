@@ -61,6 +61,9 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
     // Make sure the user has granted permission
     await NotificationController.requesPermission();
 
+    // Check if the widget is still mounted after the async operation
+    if (!context.mounted) return;
+
     // Display user options for scheduling the notification
     showDialog(
       context: context,

@@ -11,6 +11,9 @@ class DrawerWidget extends StatelessWidget {
     List<NotificationModel> pendingNotifications =
         await NotificationController.listUnique();
 
+    // Check if the widget is still mounted after the async operation
+    if (!context.mounted) return;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
