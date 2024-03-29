@@ -34,17 +34,11 @@ Future<void> showPendingNotifications(BuildContext context) async {
             }
           },
         ),
+        actionsAlignment: MainAxisAlignment.center, // Centers the actions
         actions: <Widget>[
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  child: const Text('Chiudi'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
+          TextButton(
+            child: const Text('Chiudi'),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ],
       );
