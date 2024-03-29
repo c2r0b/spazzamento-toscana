@@ -4,24 +4,9 @@ import html
 import time
 from bs4 import BeautifulSoup
 import urllib.request
-from utils.lib import clear_json_file, add_to_json_file
+from utils.lib import clear_json_file, add_to_json_file, day_to_number
 
 base_url = "https://www.aliaserviziambientali.it/puliziastrade"
-
-# Function to map Italian days to numerical representation (Monday=1, Sunday=7)
-
-
-def map_weekday(day):
-    days = {
-        "Lunedi": 1,
-        "Martedi": 2,
-        "Mercoledi": 3,
-        "Giovedi": 4,
-        "Venerdi": 5,
-        "Sabato": 6,
-        "Domenica": 7
-    }
-    return days.get(day, 0)
 
 # Function to extract time from the 'time' string
 
@@ -35,7 +20,7 @@ def extract_time(time_str):
 
 def update_json_file(city, street_data, street_name):
     add_to_json_file(city, {
-        'street': street_name,
+        'street': street_name.strip(),
         'schedule': street_data
     })
 
@@ -109,18 +94,25 @@ def get_cleaning_schedule(street):
                 new_entry['dayOdd'] = True
             elif "pari" in day_info:
                 new_entry['dayEven'] = True
-            new_entry['weekDay'] = map_weekday(day_info.split(' ')[1])
         else:
-            week_match = re.search(r'(\d+)&ordm', day_info)
-            if week_match:
-                new_entry['monthWeek'] = int(week_match.group(1))
-            week_day = day_info.split(' ')[-2]
-            new_entry['weekDay'] = map_weekday(week_day)
+            # Handle multiple week numbers
+            week_matches = re.findall(r'(\d+)&ordm', day_info)
+            if week_matches:
+                new_entry['monthWeek'] = [int(match)
+                                          for match in week_matches]
+
+        # Iterate over each word and try to convert it to a day number
+        new_entry['weekDay'] = []
+        for word in day_info.split():
+            day_num = day_to_number(word)
+            if day_num is not None:
+                new_entry['weekDay'].append(day_num)
+                break
 
         # Parse and transform 'time' field
         from_time, to_time = extract_time(time_info)
-        new_entry['from'] = from_time
-        new_entry['to'] = to_time
+        new_entry['from'] = from_time.replace('.', ':')
+        new_entry['to'] = to_time.replace('.', ':')
 
         schedule.append(new_entry)
 
