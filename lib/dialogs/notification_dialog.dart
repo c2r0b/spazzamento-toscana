@@ -35,9 +35,16 @@ Future<void> showPendingNotifications(BuildContext context) async {
           },
         ),
         actions: <Widget>[
-          TextButton(
-            child: const Text('Chiudi'),
-            onPressed: () => Navigator.of(context).pop(),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  child: const Text('Chiudi'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
           ),
         ],
       );
