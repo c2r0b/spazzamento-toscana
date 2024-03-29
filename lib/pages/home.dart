@@ -151,7 +151,10 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               MapWidget(
                   mapController: mapController,
-                  currentPosition: _currentPosition),
+                  currentPosition: _currentPosition,
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                  }),
               SearchBarWidget(
                   typeAheadController: _typeAheadController,
                   onSelected: onSelected),

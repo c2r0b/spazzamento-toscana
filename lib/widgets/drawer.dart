@@ -1,82 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
-
 import '../constants.dart';
-import '../services/notification.dart';
+import '../dialogs/notification_dialog.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
 
-  void _showPendingNotifications(BuildContext context) async {
-    List<NotificationModel> pendingNotifications =
-        await NotificationController.listUnique();
+  @override
+  _DrawerWidgetState createState() => _DrawerWidgetState();
+}
 
-    // Check if the widget is still mounted after the async operation
-    if (!context.mounted) return;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Notifiche'),
-        content: pendingNotifications.isNotEmpty
-            ? SizedBox(
-                width: double
-                    .maxFinite, // Makes the alert dialog take up the full width
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: pendingNotifications.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var notification = pendingNotifications[index];
-                    Map<String, String?> payloadMap =
-                        notification.content!.payload!;
-                    String title =
-                        notification.content?.title ?? 'Errore titolo';
-                    return Dismissible(
-                      key: Key(notification.content!.id.toString()),
-                      onDismissed: (direction) async {
-                        // Cancel the notification
-                        await NotificationController.cancel(payloadMap['id']!);
-                        // Optionally, refresh the list or give feedback to the user
-                        Navigator.pop(context);
-                        _showPendingNotifications(context); // Refresh the list
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 20),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: Card(
-                        child: ListTile(
-                          title: RichText(
-                              text: TextSpan(
-                            text:
-                                notification.content!.body ?? 'Errore notifica',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
-                          )),
-                          subtitle: Text(title),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )
-            : const Text('Nessuna notifica programmata'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Chiudi'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
+class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     //FlutterLocalNotificationsPlugin plugin =FlutterLocalNotificationsPlugin(); // Initialize the plugin
@@ -130,7 +63,7 @@ class DrawerWidget extends StatelessWidget {
             onTap: () {
               Navigator.pop(
                   context); // Close the drawer before showing the dialog
-              _showPendingNotifications(context);
+              showPendingNotifications(context);
             },
           ),
           // Segnalazione di un problema

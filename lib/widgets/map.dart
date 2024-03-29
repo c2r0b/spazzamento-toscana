@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatelessWidget {
-  final mapController;
-  final currentPosition;
+  final MapController mapController;
+  final LatLng? currentPosition;
+  final VoidCallback onTap;
 
   const MapWidget(
-      {super.key, required this.mapController, required this.currentPosition});
+      {super.key,
+      required this.mapController,
+      required this.currentPosition,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class MapWidget extends StatelessWidget {
           FlutterMap(
             mapController: mapController,
             options: MapOptions(
-              initialCenter: currentPosition,
+              initialCenter: currentPosition!,
               initialZoom: 16.0,
             ),
             children: [
@@ -27,7 +32,7 @@ class MapWidget extends StatelessWidget {
               MarkerLayer(
                 markers: [
                   Marker(
-                    point: currentPosition,
+                    point: currentPosition!,
                     width: 80,
                     height: 80,
                     child: const Icon(Icons.location_pin),
@@ -37,7 +42,9 @@ class MapWidget extends StatelessWidget {
             ],
           ),
           Positioned.fill(
-            child: IgnorePointer(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
               child: Container(
                 color: const Color.fromRGBO(
                     1, 91, 147, 0.35), // Adjust the color and opacity as needed
