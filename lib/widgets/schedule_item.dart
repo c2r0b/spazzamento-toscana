@@ -17,6 +17,7 @@ class ScheduleItemWidget extends StatefulWidget {
 
 class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
   late bool isScheduled = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -26,16 +27,23 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
 
   void _checkNotificationStatus() async {
     bool status = await NotificationController.isActive(widget.schedule.id);
-    setState(() {
-      isScheduled = status;
-    });
+    if (mounted) {
+      setState(() {
+        isScheduled = status;
+        isLoading = false;
+      });
+    }
   }
 
   void _onNotificationToggle(BuildContext context) {
     if (isScheduled) {
+      setState(() {
+        isLoading = true; // Start loading
+      });
       // Cancel the notification
-      NotificationController.cancel(widget.schedule.id)
-          .then((value) => {_checkNotificationStatus()});
+      NotificationController.cancel(widget.schedule.id).then((value) {
+        _checkNotificationStatus();
+      });
     } else {
       // Schedule the notification
       showScheduleDialog(context);
@@ -43,6 +51,11 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
   }
 
   void schedule(BuildContext context, int hoursToSubtract) {
+    if (mounted) {
+      setState(() {
+        isLoading = true; // Start loading
+      });
+    }
     Navigator.of(context).pop(); // Close the dialog
     NotificationController.activate(
             widget.schedule, widget.currentAddress, hoursToSubtract)
@@ -54,6 +67,11 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           content: Text('Troppe notifiche attive'),
         ),
       );
+      if (mounted) {
+        setState(() {
+          isLoading = false; // Stop loading
+        });
+      }
     });
   }
 
@@ -126,18 +144,24 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           // notification toggle button
           const SizedBox(width: 10),
           ElevatedButton(
-              onPressed: () {
-                _onNotificationToggle(context);
-              },
-              child: isScheduled
-                  ? const Icon(
-                      Icons.notifications_active,
-                      color: Color.fromRGBO(1, 91, 147, 1),
-                    )
-                  : (const Icon(
-                      Icons.notifications_none,
-                      color: Color.fromRGBO(1, 91, 147, 1),
-                    ))),
+            onPressed: isLoading ? null : () => _onNotificationToggle(context),
+            child: isLoading
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.0,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Color.fromRGBO(1, 91, 147, 1)),
+                    ),
+                  )
+                : Icon(
+                    isScheduled
+                        ? Icons.notifications_active
+                        : Icons.notifications_none,
+                    color: const Color.fromRGBO(1, 91, 147, 1),
+                  ),
+          )
         ]),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
