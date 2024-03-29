@@ -216,7 +216,7 @@ class NotificationController {
       Map<String, String> payloadMap,
       int daysToSubtract) async {
     // Determine the number of notifications based on the platform
-    int notificationCount = Platform.isAndroid ? 60 : 30;
+    int notificationCount = Platform.isAndroid ? 100 : 30;
 
     List<Future> notificationFutures = [];
 
