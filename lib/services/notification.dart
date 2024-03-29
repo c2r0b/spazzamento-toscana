@@ -216,7 +216,7 @@ class NotificationController {
       Map<String, String> payloadMap,
       int daysToSubtract) async {
     // Determine the number of notifications based on the platform
-    int notificationCount = Platform.isAndroid ? 50 : 30;
+    int notificationCount = Platform.isAndroid ? 60 : 30;
 
     List<Future> notificationFutures = [];
 
@@ -241,7 +241,7 @@ class NotificationController {
               // button to reschedule the notification
               NotificationActionButton(
                 key: 'reschedule',
-                label: 'Ripeti la prossima volta',
+                label: 'Ripeti le prossime volte',
               ),
             ]
           : [];
