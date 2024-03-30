@@ -23,6 +23,7 @@ class MapWidget extends StatelessWidget {
             options: MapOptions(
               initialCenter: currentPosition!,
               initialZoom: 16.0,
+              onTap: (_, __) => onTap(), // Unfocus when the map is tapped
             ),
             children: [
               TileLayer(
@@ -42,9 +43,7 @@ class MapWidget extends StatelessWidget {
             ],
           ),
           Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: onTap,
+            child: IgnorePointer(
               child: Container(
                 color: const Color.fromRGBO(
                     1, 91, 147, 0.35), // Adjust the color and opacity as needed
