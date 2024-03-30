@@ -135,7 +135,8 @@ def get_cleaning_schedule(street_name):
     # get all ECEZVA fields frome each json array element
     driver.get("https://servizi.aamps.livorno.it/Servizi/index.php")
 
-    js_script = f"$('#address').val(\"{street_name}\");$('#addressscelto').val(\"{street_name}\");$('#civico').val('{civico}');$('#cerca').click();"
+    js_script = f"$('#address').val(\"{street_name}\");$('#addressscelto').val(\"{
+        street_name}\");$('#civico').val('{civico}');$('#cerca').click();"
     driver.execute_script(js_script)
 
     # Wait for the table to appear or for any specific element that indicates the page has loaded the relevant data
@@ -183,7 +184,6 @@ def get_cleaning_schedule(street_name):
                     break
 
     if equal and data_list.__len__() > 1:
-        data_list[0]["location"] = ""
         data_list = [data_list[0]]
 
     for data in data_list:
