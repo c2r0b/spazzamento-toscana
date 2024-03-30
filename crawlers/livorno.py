@@ -184,6 +184,7 @@ def get_cleaning_schedule(street_name):
                     break
 
     if equal and data_list.__len__() > 1:
+        data_list[0]["location"] = ""
         data_list = [data_list[0]]
 
     for data in data_list:
