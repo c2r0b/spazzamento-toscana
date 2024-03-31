@@ -14,8 +14,8 @@ Future<List<ScheduleInfo>?> findSchedule(
     streetData = await Supabase.instance.client
         .from('data')
         .select('street')
-        .eq('county', county)
-        .eq('city', city);
+        .eq('city', city)
+        .or('county.eq.$county,county.eq.$city');
   } catch (e) {
     print('Error fetching street data: $e');
     return null;
@@ -49,7 +49,7 @@ Future<List<ScheduleInfo>?> findSchedule(
         .from('data')
         .select('schedule')
         .eq('city', city)
-        .eq('county', county)
+        .or('county.eq.$county,county.eq.$city')
         .eq('street', closestMatch)
         .single()
         .limit(1);

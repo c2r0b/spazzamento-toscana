@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           suggestion['geometry']['coordinates'][0]);
       mapController.move(_currentPosition!, mapController.camera.zoom);
       _currentAddress =
-          '${suggestion['properties']['name'] ?? '-'}, ${suggestion['properties']['county'] ?? '-'}';
+          '${suggestion['properties']['name'] ?? '-'}, ${suggestion['properties']['city'] ?? '-'}';
     });
     _loadSchedule(selectedCity, selectedCounty, selectedStreet);
 
