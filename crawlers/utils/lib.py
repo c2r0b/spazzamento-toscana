@@ -115,3 +115,36 @@ def roman_to_int(s):
             num += roman[s[i]]
             i += 1
     return num
+
+# Function to merge equal schedules
+
+
+def merge_equal_schedules(schedule):
+    merged_schedule = []
+    for entry in schedule:
+        if not any(existing_entry == entry for existing_entry in merged_schedule):
+            merged_schedule.append(entry)
+    return merged_schedule
+
+# Function to merge schedules with only different weekdays but identical other attributes,
+# only if 'monthWeek' is not present in either entry
+
+
+def merge_weekday_schedules(schedule):
+    for i in range(len(schedule)):
+        for j in range(i + 1, len(schedule)):
+            if i != j and schedule[i] and schedule[j]:
+                # Check if all attributes except weekdays are the same
+                # and only proceed if neither entry has a 'monthWeek' key
+                if 'monthWeek' not in schedule[i] and 'monthWeek' not in schedule[j]:
+                    are_similar = all(schedule[i].get(key) == schedule[j].get(key)
+                                      for key in schedule[i] if key not in ['weekDay'])
+
+                    if are_similar:
+                        # Merge weekDay while ensuring no duplicates
+                        schedule[i]['weekDay'] = list(
+                            set(schedule[i].get('weekDay', []) + schedule[j].get('weekDay', [])))
+                        schedule[j] = None  # Mark for deletion
+
+    # Remove the None entries
+    return [entry for entry in schedule if entry]
