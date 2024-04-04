@@ -134,8 +134,8 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
             child: RichText(
               text: TextSpan(
                 text: location,
-                style: const TextStyle(
-                    color: Colors.black,
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
@@ -146,20 +146,19 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           ElevatedButton(
             onPressed: isLoading ? null : () => _onNotificationToggle(context),
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromRGBO(1, 91, 147, 1)),
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                   )
                 : Icon(
                     isScheduled
                         ? Icons.notifications_active
                         : Icons.notifications_none,
-                    color: const Color.fromRGBO(1, 91, 147, 1),
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
           )
         ]),
@@ -180,7 +179,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: activeDays.contains(index + 1)
-                          ? const Color.fromRGBO(1, 91, 147, 1)
+                          ? Theme.of(context).colorScheme.tertiary
                           : Colors.transparent,
                       shape: BoxShape.circle,
                     ),
@@ -189,7 +188,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                       style: TextStyle(
                         color: activeDays.contains(index + 1)
                             ? Colors.white
-                            : Colors.black,
+                            : Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   );
@@ -202,7 +201,10 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${widget.schedule.from} - ${widget.schedule.to}'),
+                  Text('${widget.schedule.from} - ${widget.schedule.to}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
@@ -210,7 +212,10 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('MATTINO'),
+                  Text('MATTINO',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
@@ -218,7 +223,10 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('POMERIGGIO'),
+                  Text('POMERIGGIO',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),
@@ -227,7 +235,10 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                      'Dal ${widget.schedule.start} - Al ${widget.schedule.end}'),
+                      'Dal ${widget.schedule.start} - Al ${widget.schedule.end}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
                   ScheduleStreetSideWidget(schedule: widget.schedule)
                 ],
               ),

@@ -10,13 +10,15 @@ class ScheduleMonthDayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (schedule.dayEven == true) {
       return RichText(
-        text: const TextSpan(
+        text: TextSpan(
           children: [
-            TextSpan(text: 'Giorni ', style: TextStyle(color: Colors.black)),
+            TextSpan(
+                text: 'Giorni ',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary)),
             TextSpan(
               text: 'PARI',
               style: TextStyle(
-                  color: Color.fromRGBO(1, 91, 147, 1),
+                  color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.bold),
             ),
           ],
@@ -24,13 +26,15 @@ class ScheduleMonthDayWidget extends StatelessWidget {
       );
     } else if (schedule.dayOdd == true) {
       return RichText(
-        text: const TextSpan(
+        text: TextSpan(
           children: [
-            TextSpan(text: 'Giorni ', style: TextStyle(color: Colors.black)),
+            TextSpan(
+                text: 'Giorni ',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary)),
             TextSpan(
               text: 'DISPARI',
               style: TextStyle(
-                  color: Color.fromRGBO(0, 128, 207, 1),
+                  color: Theme.of(context).colorScheme.secondary,
                   fontWeight: FontWeight.bold),
             ),
           ],
@@ -43,8 +47,9 @@ class ScheduleMonthDayWidget extends StatelessWidget {
         children.add(
           TextSpan(
             text: '${schedule.monthWeek[i]}°',
-            style: const TextStyle(
-                color: Colors.blue, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold),
           ),
         );
 
@@ -55,8 +60,9 @@ class ScheduleMonthDayWidget extends StatelessWidget {
         }
       }
 
-      children.add(const TextSpan(
-          text: ' del mese', style: TextStyle(color: Colors.black)));
+      children.add(TextSpan(
+          text: ' del mese',
+          style: TextStyle(color: Theme.of(context).colorScheme.primary)));
 
       return RichText(text: TextSpan(children: children));
     }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-final ColorScheme colorScheme = ColorScheme.fromSwatch().copyWith(
+final ColorScheme lightColorScheme = ColorScheme.fromSwatch().copyWith(
   brightness: Brightness.light,
-  primary: const Color.fromRGBO(0, 41, 67, 1.0),
+  primary: Colors.black,
   onPrimary: Colors.red, // Needed for contrast (e.g., text on primary color)
-  secondary: const Color.fromRGBO(0, 41, 67, 1.0),
+  secondary: const Color.fromRGBO(0, 128, 207, 1),
   onSecondary: Colors.black,
+  tertiary: const Color.fromRGBO(1, 91, 147, 1),
   error: Colors.red, // Keep some contrast for error states
   onError: Colors.white,
   background: Colors.white,
@@ -14,9 +15,9 @@ final ColorScheme colorScheme = ColorScheme.fromSwatch().copyWith(
   onSurface: Colors.black,
 );
 
-final ThemeData themeData = ThemeData(
+final ThemeData lightTheme = ThemeData(
   // Define other theme properties as needed
-  colorScheme: colorScheme,
+  colorScheme: lightColorScheme,
   useMaterial3: true, // If you're using Material 3
 
   // Set the divider color

@@ -30,13 +30,13 @@ class DraggableBottomWidget extends StatelessWidget {
             0.8, // The maximum height of the sheet when user drags it up
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(18.0),
                   topRight: Radius.circular(18.0),
                 ),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     blurRadius: 10.0,
                     color: Colors.black26,
@@ -55,8 +55,9 @@ class DraggableBottomWidget extends StatelessWidget {
                               title: RichText(
                                   text: TextSpan(
                                 text: currentAddress,
-                                style: const TextStyle(
-                                    color: Colors.black,
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold),
                               )),

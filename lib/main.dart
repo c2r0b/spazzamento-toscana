@@ -1,6 +1,7 @@
 import '../services/notification.dart';
 import 'package:flutter/material.dart';
-import 'theme.dart';
+import 'themes/light.dart';
+import 'themes/dark.dart';
 import 'pages/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -35,7 +36,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Spazzamento',
-      theme: themeData,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home: const HomePage(title: 'Spazzamento'),
       debugShowCheckedModeBanner: false,
     );

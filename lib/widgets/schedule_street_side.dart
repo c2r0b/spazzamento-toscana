@@ -14,43 +14,47 @@ class ScheduleStreetSideWidget extends StatelessWidget {
         'condition': schedule.numberEven,
         'text': 'Civici',
         'value': 'PARI',
-        'color': const Color.fromRGBO(1, 91, 147, 1)
+        'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.numberOdd,
         'text': 'Civici',
         'value': 'DISPARI',
-        'color': const Color.fromRGBO(0, 128, 207, 1)
+        'color': Theme.of(context).colorScheme.secondary
       },
       {
         'condition': schedule.rightSide,
         'text': 'Lato',
         'value': 'DESTRO',
-        'color': const Color.fromRGBO(1, 91, 147, 1)
+        'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.leftSide,
         'text': 'Lato',
         'value': 'SINISTRO',
-        'color': const Color.fromRGBO(0, 128, 207, 1)
+        'color': Theme.of(context).colorScheme.secondary
       },
       {
         'condition': schedule.internalSide,
         'text': 'Lato',
         'value': 'INTERNO',
-        'color': const Color.fromRGBO(1, 91, 147, 1)
+        'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.externalSide,
         'text': 'Lato',
         'value': 'ESTERNO',
-        'color': const Color.fromRGBO(0, 128, 207, 1)
+        'color': Theme.of(context).colorScheme.secondary
       },
     ];
 
     // Find the first condition that's true and get the corresponding text and color
     var result = conditions.firstWhere((map) => map['condition'] == true,
-        orElse: () => {'text': null, 'value': null, 'color': Colors.black});
+        orElse: () => {
+              'text': null,
+              'value': null,
+              'color': Theme.of(context).colorScheme.primary
+            });
 
     // Explicitly cast 'text' and 'color' to their respective types
     String? text = result['text'] as String?;
@@ -62,7 +66,8 @@ class ScheduleStreetSideWidget extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-                text: '$text ', style: const TextStyle(color: Colors.black)),
+                text: '$text ',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary)),
             TextSpan(
               text: value,
               style: TextStyle(color: color!, fontWeight: FontWeight.bold),

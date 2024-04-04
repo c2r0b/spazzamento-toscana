@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                     child: FloatingActionButton(
                       onPressed: _centerOnUserLocation,
                       tooltip: 'Dove mi trovo',
-                      backgroundColor: const Color.fromRGBO(0, 41, 67, 1.0),
+                      backgroundColor: Theme.of(context).colorScheme.tertiary,
                       child: const Icon(Icons.my_location),
                     ),
                   ),

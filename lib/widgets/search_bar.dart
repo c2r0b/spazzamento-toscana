@@ -3,8 +3,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import '../services/search.dart';
 
 class SearchBarWidget extends StatelessWidget {
-  final typeAheadController;
-  final onSelected;
+  final TextEditingController? typeAheadController;
+  final Function? onSelected;
 
   const SearchBarWidget(
       {super.key, required this.typeAheadController, required this.onSelected});
@@ -16,11 +16,11 @@ class SearchBarWidget extends StatelessWidget {
       left: 8,
       right: 8,
       child: Card(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         child: Material(
-          color: Colors.white, // Force
+          color: Theme.of(context).colorScheme.surface, // Force
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
           child: Padding(
@@ -36,9 +36,10 @@ class SearchBarWidget extends StatelessWidget {
                   focusNode: focusNode,
                   autofocus: false,
                   style: DefaultTextStyle.of(context).style,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       border: InputBorder.none,
-                      icon: Icon(Icons.search),
+                      icon: Icon(Icons.search,
+                          color: Theme.of(context).colorScheme.primary),
                       hintText: 'Cerca una strada...'),
                 );
               },
@@ -57,7 +58,9 @@ class SearchBarWidget extends StatelessWidget {
                 );
               },
               onSelected: (suggestion) {
-                onSelected(suggestion);
+                if (onSelected != null) {
+                  onSelected!(suggestion);
+                }
               },
             ),
           ),

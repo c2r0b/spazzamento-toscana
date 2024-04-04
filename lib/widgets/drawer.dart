@@ -22,15 +22,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
             ),
-            child: Text('Spazzamento Toscana'),
+            child: const Text('Spazzamento Toscana'),
           ),
           ListTile(
             title: const Text('Come funziona'),
-            leading: const Icon(Icons.help_outline),
+            leading: Icon(Icons.help_outline,
+                color: Theme.of(context).colorScheme.primary),
             onTap: () {
               Navigator.pop(context);
               showDialog<String>(
@@ -59,7 +60,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             title: const Text('Notifiche programmate'),
-            leading: const Icon(Icons.notifications_active_outlined),
+            leading: Icon(Icons.notifications_active_outlined,
+                color: Theme.of(context).colorScheme.primary),
             onTap: () {
               Navigator.pop(
                   context); // Close the drawer before showing the dialog
@@ -69,7 +71,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           // Segnalazione di un problema
           ListTile(
             title: const Text('Segnala un problema'),
-            leading: const Icon(Icons.report_problem_outlined),
+            leading: Icon(Icons.report_problem_outlined,
+                color: Theme.of(context).colorScheme.primary),
             onTap: () {
               Navigator.pop(context);
               showDialog<String>(
@@ -98,7 +101,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             title: const Text('Rispetto della privacy'),
-            leading: const Icon(Icons.privacy_tip_outlined),
+            leading: Icon(Icons.privacy_tip_outlined,
+                color: Theme.of(context).colorScheme.primary),
             onTap: () {
               Navigator.pop(context);
               showDialog<String>(
