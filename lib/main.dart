@@ -15,14 +15,17 @@ void main() async {
       url: dotenv.env['SUPABASE_URL']!,
       anonKey: dotenv.env['SUPABASE_KEY']!,
     );
-
-    await NotificationController.initialize();
-
-    runApp(const MyApp());
   } catch (error) {
-    print('Error initializing the app: $error');
-    // Handle initialization error (perhaps show an error screen)
+    print('Error initializing the API connection: $error');
   }
+
+  try {
+    await NotificationController.initialize();
+  } catch (error) {
+    print('Error initializing the notification service: $error');
+  }
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
