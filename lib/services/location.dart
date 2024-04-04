@@ -4,7 +4,6 @@ import '../models/address.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:intl/intl.dart';
 
 Future<StateUpdate> determinePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();

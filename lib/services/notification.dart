@@ -95,14 +95,14 @@ class NotificationController {
       from = schedule.from!;
     }
 
-    if (!schedule.weekDay.isNotEmpty || from == null) {
+    if (!schedule.weekDay.isNotEmpty) {
       return;
     }
 
     int daysToSubtract = 0;
-    int hourToDisplay = int.parse(from!.split(':')[0]);
+    int hourToDisplay = int.parse(from.split(':')[0]);
     int hour = hourToDisplay - hoursToSubtract;
-    int minute = int.parse(from!.split(':')[1]);
+    int minute = int.parse(from.split(':')[1]);
 
     if (title == '') {
       title =
