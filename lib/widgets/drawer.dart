@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../dialogs/notification_dialog.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -12,7 +12,7 @@ class DrawerWidget extends StatelessWidget {
         padding: const EdgeInsets.only(top: 40, left: 5),
         children: [
           ListTile(
-            title: const Text('Come funziona'),
+            title: Text(AppLocalizations.of(context)!.howItWorks),
             leading: Icon(Icons.help_outline,
                 color: Theme.of(context).colorScheme.primary),
             onTap: () {
@@ -26,13 +26,13 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text(howItWorks),
+                        Text(AppLocalizations.of(context)!.howItWorksText),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text('Chiudi'),
+                          child: Text(AppLocalizations.of(context)!.close),
                         ),
                       ],
                     ),
@@ -42,7 +42,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Notifiche programmate'),
+            title: Text(AppLocalizations.of(context)!.scheduledNotifications),
             leading: Icon(Icons.notifications_active_outlined,
                 color: Theme.of(context).colorScheme.primary),
             onTap: () {
@@ -53,7 +53,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           // Segnalazione di un problema
           ListTile(
-            title: const Text('Segnala un problema'),
+            title: Text(AppLocalizations.of(context)!.reportIssue),
             leading: Icon(Icons.report_problem_outlined,
                 color: Theme.of(context).colorScheme.primary),
             onTap: () {
@@ -67,13 +67,14 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text(contacts),
+                        Text(AppLocalizations.of(context)!.reportIssueText(
+                            'segnalazioni@spazzamentotoscana.it')),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text('Chiudi'),
+                          child: Text(AppLocalizations.of(context)!.close),
                         ),
                       ],
                     ),
@@ -83,7 +84,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Rispetto della privacy'),
+            title: Text(AppLocalizations.of(context)!.privacyPolicy),
             leading: Icon(Icons.privacy_tip_outlined,
                 color: Theme.of(context).colorScheme.primary),
             onTap: () {
@@ -97,13 +98,13 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text(privacyPolicy),
+                        Text(AppLocalizations.of(context)!.privacyPolicyText),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text('Chiudi'),
+                          child: Text(AppLocalizations.of(context)!.close),
                         ),
                       ],
                     ),

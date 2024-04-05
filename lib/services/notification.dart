@@ -94,9 +94,7 @@ class NotificationController {
       from = schedule.from!;
     }
 
-    if (!schedule.weekDay.isNotEmpty) {
-      return;
-    }
+    assert(schedule.weekDay.isNotEmpty);
 
     int daysToSubtract = 0;
     int hourToDisplay = int.parse(from.split(':')[0]);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/search.dart';
 
 class SearchBarWidget extends StatelessWidget {
@@ -40,7 +41,8 @@ class SearchBarWidget extends StatelessWidget {
                       border: InputBorder.none,
                       icon: Icon(Icons.search,
                           color: Theme.of(context).colorScheme.primary),
-                      hintText: 'Cerca una strada...'),
+                      hintText:
+                          '${AppLocalizations.of(context)!.searchStreet}...'),
                 );
               },
               suggestionsCallback: (pattern) async {

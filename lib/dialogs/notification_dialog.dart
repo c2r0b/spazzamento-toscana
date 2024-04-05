@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'notification_list.dart';
 import '../services/notification.dart';
 
@@ -9,7 +10,7 @@ Future<void> showPendingNotifications(BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Notifiche'),
+        title: Text(AppLocalizations.of(context)!.notifications),
         content: FutureBuilder<List<NotificationModel>>(
           future: NotificationController.listUnique(),
           builder: (context, snapshot) {
@@ -28,16 +29,16 @@ Future<void> showPendingNotifications(BuildContext context) async {
               var notifications = snapshot.data ?? [];
               return notifications.isNotEmpty
                   ? NotificationList(notifications: notifications)
-                  : const Text('Nessuna notifica programmata');
+                  : Text(AppLocalizations.of(context)!.noNotifications);
             } else {
-              return const Text('Nessun dato disponibile');
+              return Text(AppLocalizations.of(context)!.noDataFound);
             }
           },
         ),
         actionsAlignment: MainAxisAlignment.center, // Centers the actions
         actions: <Widget>[
           TextButton(
-            child: const Text('Chiudi'),
+            child: Text(AppLocalizations.of(context)!.close),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],

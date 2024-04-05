@@ -17,7 +17,7 @@ class ScheduleInfo with _$ScheduleInfo {
     String? to,
     String? day,
     String? time,
-    @Default('Tutta la strada') String? location,
+    String? location,
     bool? dayEven,
     bool? dayOdd,
     bool? numberEven,

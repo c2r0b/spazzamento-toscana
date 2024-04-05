@@ -1,5 +1,6 @@
-import '../models/schedule_info/schedule_info.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import '../models/schedule_info/schedule_info.dart';
 
 class ScheduleStreetSideWidget extends StatelessWidget {
   final ScheduleInfo schedule;
@@ -12,38 +13,38 @@ class ScheduleStreetSideWidget extends StatelessWidget {
     var conditions = [
       {
         'condition': schedule.numberEven,
-        'text': 'Civici',
-        'value': 'PARI',
+        'text': AppLocalizations.of(context)!.civics,
+        'value': AppLocalizations.of(context)!.even,
         'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.numberOdd,
-        'text': 'Civici',
-        'value': 'DISPARI',
+        'text': AppLocalizations.of(context)!.civics,
+        'value': AppLocalizations.of(context)!.odd,
         'color': Theme.of(context).colorScheme.secondary
       },
       {
         'condition': schedule.rightSide,
-        'text': 'Lato',
-        'value': 'DESTRO',
+        'text': AppLocalizations.of(context)!.side,
+        'value': AppLocalizations.of(context)!.right,
         'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.leftSide,
-        'text': 'Lato',
-        'value': 'SINISTRO',
+        'text': AppLocalizations.of(context)!.side,
+        'value': AppLocalizations.of(context)!.left,
         'color': Theme.of(context).colorScheme.secondary
       },
       {
         'condition': schedule.internalSide,
-        'text': 'Lato',
-        'value': 'INTERNO',
+        'text': AppLocalizations.of(context)!.side,
+        'value': AppLocalizations.of(context)!.internal,
         'color': Theme.of(context).colorScheme.tertiary
       },
       {
         'condition': schedule.externalSide,
-        'text': 'Lato',
-        'value': 'ESTERNO',
+        'text': AppLocalizations.of(context)!.side,
+        'value': AppLocalizations.of(context)!.external,
         'color': Theme.of(context).colorScheme.secondary
       },
     ];

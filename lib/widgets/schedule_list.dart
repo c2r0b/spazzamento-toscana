@@ -1,3 +1,4 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../models/schedule_info/schedule_info.dart';
 import '../widgets/schedule_item.dart';
@@ -24,9 +25,9 @@ class ScheduleListWidget extends StatelessWidget {
     }
 
     if (selectedSchedule == null) {
-      return const ListTile(
-        title: Text('Nessun dato trovato'),
-        leading: Icon(Icons.error),
+      return ListTile(
+        title: Text(AppLocalizations.of(context)!.noDataFound),
+        leading: const Icon(Icons.error),
       );
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/schedule_info/schedule_info.dart';
 import '../services/notification.dart';
 import './schedule_street_side.dart';
@@ -63,8 +64,8 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
       _checkNotificationStatus();
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Troppe notifiche attive'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.tooManyNotifications),
         ),
       );
       if (mounted) {
@@ -91,19 +92,19 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: const Text('12 ore prima'),
+              title: Text(AppLocalizations.of(context)!.hoursBefore(12)),
               onTap: () {
                 schedule(context, 12);
               },
             ),
             ListTile(
-              title: const Text('1 ora prima'),
+              title: Text(AppLocalizations.of(context)!.hoursBefore(1)),
               onTap: () {
                 schedule(context, 1);
               },
             ),
             ListTile(
-              title: const Text('Quando inizia'),
+              title: Text(AppLocalizations.of(context)!.whenItStarts),
               onTap: () async {
                 schedule(context, 0);
               },
@@ -117,14 +118,22 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
   @override
   Widget build(BuildContext context) {
     // Define the mapping and the order
-    final daysOfWeek = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
+    final daysOfWeek = [
+      AppLocalizations.of(context)!.day1,
+      AppLocalizations.of(context)!.day2,
+      AppLocalizations.of(context)!.day3,
+      AppLocalizations.of(context)!.day4,
+      AppLocalizations.of(context)!.day5,
+      AppLocalizations.of(context)!.day6,
+      AppLocalizations.of(context)!.day7
+    ];
     List<dynamic> activeDays = [];
 
     // Check if weekDay is a list or a single value and adjust accordingly
     activeDays = widget.schedule.weekDay;
 
     String? location = widget.schedule.location == ''
-        ? 'Tutta la strada'
+        ? AppLocalizations.of(context)!.entireStreet
         : widget.schedule.location;
 
     return ListTile(
@@ -212,7 +221,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('MATTINO',
+                  Text(AppLocalizations.of(context)!.morning,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       )),
@@ -223,7 +232,7 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('POMERIGGIO',
+                  Text(AppLocalizations.of(context)!.afternoon,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       )),
