@@ -28,7 +28,6 @@ class NotificationList extends StatelessWidget {
                   context); // Recursively refresh the list.
             },
             background: Container(
-              color: Colors.red,
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(right: 20),
               child: const Icon(Icons.delete, color: Colors.white),
@@ -36,7 +35,9 @@ class NotificationList extends StatelessWidget {
             child: Card(
               child: ListTile(
                 title: Text(notification.content!.body ?? 'Errore notifica'),
-                subtitle: Text(title),
+                subtitle: Text(title,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary)),
               ),
             ),
           );
