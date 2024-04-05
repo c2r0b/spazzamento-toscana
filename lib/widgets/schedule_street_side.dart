@@ -1,4 +1,4 @@
-import '../models/schedule_info.dart';
+import '../models/schedule_info/schedule_info.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleStreetSideWidget extends StatelessWidget {

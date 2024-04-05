@@ -1,4 +1,4 @@
-import '../models/schedule_info.dart';
+import '../models/schedule_info/schedule_info.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
@@ -62,8 +62,12 @@ Future<List<ScheduleInfo>?> findSchedule(
 
   List<ScheduleInfo> schedules = [];
   for (var schedule in schedule['data']) {
-    ScheduleInfo scheduleInfo =
-        ScheduleInfo.fromJson(city, county, closestMatch, schedule);
+    // add city, county, closestMatch to the schedule data
+    schedule['city'] = city;
+    schedule['county'] = county;
+    schedule['street'] = closestMatch;
+
+    ScheduleInfo scheduleInfo = ScheduleInfo.fromJson(schedule);
     schedules.add(scheduleInfo);
   }
   return schedules;

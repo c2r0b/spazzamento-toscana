@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/schedule_info.dart';
+import '../models/schedule_info/schedule_info.dart';
 import '../widgets/schedule_list.dart';
 
 class DraggableBottomWidget extends StatelessWidget {

@@ -9,7 +9,7 @@ final ColorScheme darkColorScheme = ColorScheme.fromSwatch().copyWith(
   tertiary: const Color.fromRGBO(1, 91, 147, 1),
   error: Colors.red, // Keep some contrast for error states
   onError: Colors.white,
-  background: Colors.black,
+  background: const Color.fromARGB(255, 0, 16, 26),
   onBackground: Colors.white,
   surface: const Color.fromARGB(255, 0, 16, 26),
   onSurface: Colors.white,

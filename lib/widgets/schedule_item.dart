@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/schedule_info.dart';
+import '../models/schedule_info/schedule_info.dart';
 import '../services/notification.dart';
 import './schedule_street_side.dart';
 import './schedule_month_day.dart';

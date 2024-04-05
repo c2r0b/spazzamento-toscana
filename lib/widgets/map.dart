@@ -36,7 +36,7 @@ class MapWidget extends StatelessWidget {
                     point: currentPosition!,
                     width: 80,
                     height: 80,
-                    child: const Icon(Icons.location_pin),
+                    child: const Icon(Icons.location_pin, color: Colors.black),
                   ),
                 ],
               ),

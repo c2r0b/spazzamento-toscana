@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../models/schedule_info.dart';
-import '../models/state_update.dart';
+import '../models/schedule_info/schedule_info.dart';
+import '../models/state_update/state_update.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/drawer.dart';
 import '../widgets/map.dart';

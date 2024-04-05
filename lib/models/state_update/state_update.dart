@@ -1,4 +1,4 @@
-import '../models/address.dart';
+import '../address/address.dart';
 import 'package:latlong2/latlong.dart';
 
 class StateUpdate {

@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 
-import '../models/schedule_info.dart';
+import '../models/schedule_info/schedule_info.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 class NotificationController {
@@ -32,8 +32,7 @@ class NotificationController {
       // Parsing the payload data.
       Map<String, dynamic> payload = receivedNotification.payload!;
       Map<String, dynamic> json = jsonDecode(payload['schedule']);
-      ScheduleInfo schedule = ScheduleInfo.fromJson(
-          json['city'], json['county'], json['street'], json);
+      ScheduleInfo schedule = ScheduleInfo.fromJson(json);
       String address = payload['address'];
       int hoursToSubtract = int.parse(payload['hoursToSubtract']);
 

@@ -1,5 +1,5 @@
-import '../models/state_update.dart';
-import '../models/address.dart';
+import '../models/state_update/state_update.dart';
+import '../models/address/address.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
