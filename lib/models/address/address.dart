@@ -15,8 +15,7 @@ class Address {
     return Address(
       city: placemark.locality ?? '',
       county:
-          placemark.subAdministrativeArea!.replaceFirst("Provincia di ", "") ??
-              '',
+          placemark.subAdministrativeArea!.replaceFirst("Provincia di ", ""),
       street: placemark.thoroughfare ?? '',
     );
   }
