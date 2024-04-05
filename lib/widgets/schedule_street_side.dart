@@ -62,8 +62,8 @@ class ScheduleStreetSideWidget extends StatelessWidget {
     Color? color = result['color'] as Color?;
 
     if (text != null && value != null) {
-      return RichText(
-        text: TextSpan(
+      return Text.rich(
+        TextSpan(
           children: [
             TextSpan(
                 text: '$text ',

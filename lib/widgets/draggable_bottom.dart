@@ -52,8 +52,7 @@ class DraggableBottomWidget extends StatelessWidget {
                     : Column(
                         children: [
                           ListTile(
-                              title: RichText(
-                                  text: TextSpan(
+                              title: Text.rich(TextSpan(
                                 text: currentAddress,
                                 style: TextStyle(
                                     color:

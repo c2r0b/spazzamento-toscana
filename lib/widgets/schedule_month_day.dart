@@ -9,8 +9,8 @@ class ScheduleMonthDayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (schedule.dayEven == true) {
-      return RichText(
-        text: TextSpan(
+      return Text.rich(
+        TextSpan(
           children: [
             TextSpan(
                 text: 'Giorni ',
@@ -25,8 +25,8 @@ class ScheduleMonthDayWidget extends StatelessWidget {
         ),
       );
     } else if (schedule.dayOdd == true) {
-      return RichText(
-        text: TextSpan(
+      return Text.rich(
+        TextSpan(
           children: [
             TextSpan(
                 text: 'Giorni ',
@@ -64,7 +64,7 @@ class ScheduleMonthDayWidget extends StatelessWidget {
           text: ' del mese',
           style: TextStyle(color: Theme.of(context).colorScheme.primary)));
 
-      return RichText(text: TextSpan(children: children));
+      return Text.rich(TextSpan(children: children));
     }
 
     return const SizedBox.shrink();

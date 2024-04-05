@@ -131,8 +131,8 @@ class _ScheduleItemWidgetState extends State<ScheduleItemWidget> {
         title:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Flexible(
-            child: RichText(
-              text: TextSpan(
+            child: Text.rich(
+              TextSpan(
                 text: location,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
