@@ -22,19 +22,21 @@ class DrawerWidget extends StatelessWidget {
                 builder: (BuildContext context) => Dialog(
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(AppLocalizations.of(context)!.howItWorksText),
-                        const SizedBox(height: 15),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(AppLocalizations.of(context)!.close),
-                        ),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(AppLocalizations.of(context)!.howItWorksText),
+                          const SizedBox(height: 15),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(AppLocalizations.of(context)!.close),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
