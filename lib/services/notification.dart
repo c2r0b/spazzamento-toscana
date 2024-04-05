@@ -215,8 +215,6 @@ class NotificationController {
     // Determine the number of notifications based on the platform
     int notificationCount = Platform.isAndroid ? 100 : 30;
 
-    List<Future> notificationFutures = [];
-
     await checkLimitExceeded(notificationCount);
 
     DateTime startDate = DateTime.now();
