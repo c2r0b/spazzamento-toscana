@@ -9,7 +9,7 @@ class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        padding: const EdgeInsets.only(top: 40, left: 5),
+        padding: const EdgeInsets.only(top: 60, left: 5),
         children: [
           ListTile(
             title: Text(AppLocalizations.of(context)!.howItWorks),
