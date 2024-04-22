@@ -5,7 +5,7 @@
   "howItWorksText": "This application uses data on street cleaning made available by local authorities.\nThe data is collected and made available non-profit.\n\nThe application is not responsible for the accuracy of the data provided by local authorities.\nIt is advisable to verify the information with the local authority.\n\nRegarding prohibited stops, changes or exceptions not present in the data may have been introduced, so it is always recommended to check the official information available on street signs.\n\nThe mapping system is provided by OpenStreetMap and the data is available under the Open Database License.",
   "scheduledNotifications": "Scheduled notifications",
   "reportIssue": "Report an issue",
-  "reportIssueText": "To report an issue with the application or a missing/incorrect data, write to:\n\n{address}",
+  "reportIssueText": "To report an issue with the application or a missing/incorrect data, open an issue here:",
   "privacyPolicy": "Privacy policy",
   "privacyPolicyText": "This application does not collect personal data, does not track users, and does not use cookies.\nTherefore, no consent is required for its use.",
   "days": "Days",

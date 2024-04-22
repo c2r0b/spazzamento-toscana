@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../dialogs/notification_dialog.dart';
+
+final Uri _url =
+    Uri.parse('https://github.com/c2r0b/spazzamento-toscana-support/issues');
+
+Future<void> _launchUrl() async {
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
+}
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
@@ -69,8 +79,16 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(AppLocalizations.of(context)!.reportIssueText(
-                            'segnalazioni@spazzamentotoscana.it')),
+                        Text(AppLocalizations.of(context)!.reportIssueText),
+                        const SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _launchUrl();
+                          },
+                          child:
+                              Text(AppLocalizations.of(context)!.reportIssue),
+                        ),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () {
