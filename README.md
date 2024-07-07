@@ -35,4 +35,4 @@ SUPABASE_KEY=your_supabase_anon_key
 ```
 
 ## License
-© 2024 Spazzamento Toscana by [c2r0b](https://github.com/c2r0b)
+The MIT license. Please see the [`LICENSE`](./LICENSE) file for more details.
