@@ -5,7 +5,7 @@ Setup upcoming street cleaning notifications to avoid fines*.
 [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg">](https://apps.apple.com/it/app/spazzamento-toscana/id6479202229)
 
 ## Description
-This app is designed to provide the citizens of Tuscany with information about the street washing service in their area.  
+This app is designed to provide the citizens of Tuscany with information about the street washing service.  
 
 (*) You can setup notifications that remind you of upcoming street cleaning, altough checking the correct information on street signs is always recommended to make sure the information provided by the app is up to date.
 
